@@ -55,6 +55,7 @@ mkdir -p $RPM_BUILD_ROOT%{_psi_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}/
 mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 mkdir -p $RPM_BUILD_ROOT/var/log/%{__app}/
+mkdir -p $RPM_BUILD_ROOT%{_psi_datadir}
 
 pushd doc
 install -c -m 644 log.conf.example $RPM_BUILD_ROOT%{_psi_sysconfdir}/log.conf.example
@@ -146,6 +147,7 @@ fi
 %{_psi_bindir}/psil-cleandb
 %{_psi_bindir}/psil-set
 %dir /var/log/%{__app}
+%dir %{_psi_datadir}
 
 %changelog
 * Mon Apr  2 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-1
