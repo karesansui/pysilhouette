@@ -1,0 +1,212 @@
+#!/bin/bash
+#
+# silhouetted  The startup script for the Pysilhouette system.
+#
+# chkconfig: 2345 97 03
+# description: Pysilhouette is an application running in the background system.
+#
+# processname: silhouetted
+# config: /etc/sysconfig/silhouetted
+# pidfile: /var/run/silhouetted.pid
+#          /var/run/schedulerd.pid
+#          /var/run/performerd.pid
+#          /var/run/asynperformerd.pid
+#          /var/run/asynschedulerd.pid
+#
+# lockfile: /var/lock/subsys/silhouetted
+#           /var/lock/subsys/schedulerd
+#           /var/lock/subsys/performerd
+#           /var/lock/subsys/asynperformerd
+#           /var/lock/subsys/asynschedulerd
+#
+
+source /etc/rc.d/init.d/functions
+source /etc/sysconfig/network
+
+# For SELinux we need to use 'runuser' not 'su'
+if [ -x /sbin/runuser ]; then
+    SU=runuser
+else
+    SU=su
+fi
+
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 1
+
+#Default value
+prog="silhouette"
+progd="silhouetted"
+app="pysilhouette"
+sch_progd='schedulerd'
+per_progd='performerd'
+asyn_sch_progd='asynschedulerd'
+asyn_per_progd='asynperformerd'
+
+sysconfig="/etc/sysconfig/${progd}"
+
+# Read configuration
+[ -r "${sysconfig}" ] && source "${sysconfig}"
+
+if [ "x${PYTHON}" == "x" ]; then
+  PYTHON=`which python`
+fi
+
+# Config file.
+conf="/etc/${app}/${prog}.conf"
+
+# Process id file.
+pidfile="/var/run/${progd}.pid"
+lockfile="/var/lock/subsys/${progd}"
+sch_pidfile="/var/run/${sch_progd}.pid"
+sch_lockfile="/var/lock/subsys/${sch_progd}"
+per_pidfile="/var/run/${per_progd}.pid"
+per_lockfile="/var/lock/subsys/${per_progd}"
+asyn_sch_pidfile="/var/run/${asyn_sch_progd}.pid"
+asyn_sch_lockfile="/var/lock/subsys/${asyn_sch_progd}"
+asyn_per_pidfile="/var/run/${asyn_per_progd}.pid"
+asyn_per_lockfile="/var/lock/subsys/${asyn_per_progd}"
+
+# Daemon mode.
+extra_args=""
+if [ "x${DAEMON}" = "xyes" ]; then
+    extra_args=${extra_args}" -d"
+fi
+
+# Debug mode.
+if [ "x${DEBUG}" = "xyes" ]; then
+    extra_args=${extra_args}" -v"
+fi
+
+desc="${progd} (Daemon)"
+
+# options
+CMD_ARGS="-p ${pidfile} -c ${conf} ${extra_args}"
+
+
+start() {
+    echo -n $"Starting $desc: "
+    if [ -e ${pidfile} ]; then
+	    echo "already running..."
+	    return 1
+    fi
+
+    touch ${pidfile} ${sch_pidfile} ${per_pidfile} ${asyn_sch_pidfile} ${asyn_per_pidfile}
+    chown ${USER}:${GROUP} ${pidfile} ${sch_pidfile} ${per_pidfile} ${asyn_sch_pidfile} ${asyn_per_pidfile}
+    if [ "x${PYTHON_SEARCH_PATH}" != "x" ]; then
+        env="PYTHONPATH=${PYTHON_SEARCH_PATH}:\$PYTHONPATH"
+    fi
+    ${SU} -l ${USER} -c "${env} ${PYTHON} /usr/bin/${prog}.py ${CMD_ARGS}"
+    RETVAL=$?
+    if [ ${RETVAL} -eq 0 ]; then
+        touch ${lockfile} ${sch_lockfile} ${per_lockfile} ${asyn_sch_lockfile} ${asyn_per_lockfile}
+        success
+    else
+        failure 
+        stop
+    fi
+    echo ""
+    return ${RETVAL} 
+}
+
+silhouetted_stop() {
+    echo -n $"Shutting down $desc: "
+    if [ ! -e ${pidfile} ]; then
+        echo "not running..."
+        return 1
+    fi
+    pid=`cat ${pidfile}`
+    if [ "x${pid}" == "x" ]; then
+        echo "not running... - not pid"
+        rm -f ${pidfile}
+        return 1
+    fi
+    killproc -p ${pidfile} -15
+    echo
+    RETVAL=$?
+    return ${RETVAL}
+}
+
+stop() {
+    silhouetted_stop
+    SIL_RETVAL=$?
+    if [ ${SIL_RETVAL} -eq 0 ]; then
+        rm -f ${lockfile}
+        rm -f ${pidfile}
+    fi
+
+    # scheduler
+    eval "/etc/rc.d/init.d/${sch_progd} stop"
+    SCH_RETVAL=$?
+    if [ ${SCH_RETVAL} -eq 0 ]; then
+        rm -f ${sch_lockfile}
+        rm -f ${sch_pidfile}
+    fi
+
+    # performer
+    eval "/etc/rc.d/init.d/${per_progd} stop"
+    PER_RETVAL=$?
+    if [ ${PER_RETVAL} -eq 0 ]; then
+        rm -f ${per_lockfile}
+        rm -f ${per_pidfile}
+    fi
+
+    # asynscheduler
+    eval "/etc/rc.d/init.d/${asyn_sch_progd} stop"
+    ASYN_SCH_RETVAL=$?
+    if [ ${ASYN_SCH_RETVAL} -eq 0 ]; then
+        rm -f ${asyn_sch_lockfile}
+        rm -f ${asyn_sch_pidfile}
+    fi
+
+    # asynperformer
+    eval "/etc/rc.d/init.d/${asyn_per_progd} stop"
+    ASYN_PER_RETVAL=$?
+    if [ ${ASYN_PER_RETVAL} -eq 0 ]; then
+        rm -f ${asyn_per_lockfile}
+        rm -f ${asyn_per_pidfile}
+    fi
+
+    # The return code of the performer daemon is the first digit. 
+    # The return code of the scheduler daemon is the second digit. 
+    # The return code of the silhouetted daemon is the third digit. 
+    # All stop functions return only the exit code of 0(Normal) or 1(Abnormal).
+    #RETVAL=`expr ${SIL_RETVAL} \* 100 + ${SCH_RETVAL} \* 10 + ${PER_RETVAL}`
+    RETVAL=`expr ${SIL_RETVAL} \* 10000 + ${SCH_RETVAL} \* 1000 + ${PER_RETVAL} \* 100 + ${ASYN_SCH_RETVAL} \* 10 + ${ASYN_PER_RETVAL}`
+    return ${RETVAL}
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    restart|reload)
+	restart
+	;;
+    condrestart)
+	[ -e ${lockfile} ] && restart
+	RETVAL=$?
+	;;
+    status)
+	status ${progd}
+    eval "/etc/rc.d/init.d/${sch_progd} status"
+    eval "/etc/rc.d/init.d/${per_progd} status"
+    eval "/etc/rc.d/init.d/${asyn_sch_progd} status"
+    eval "/etc/rc.d/init.d/${asyn_per_progd} status"
+	RETVAL=$?
+	;;
+    *)
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	RETVAL=1
+esac
+
+exit $RETVAL

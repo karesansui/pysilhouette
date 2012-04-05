@@ -1,0 +1,6 @@
+etc/pysilhouette
+etc/init.d
+etc/default
+usr/bin
+var/log/pysilhouette
+var/lib/pysilhouette

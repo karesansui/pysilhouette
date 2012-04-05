@@ -1,0 +1,5 @@
+pysilhouette (0.6.2-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Kei Funagayama <kei@karesansui-project.info>  Tue, 07 Jul 2009 11:57:49 +0900

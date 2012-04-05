@@ -1,0 +1,104 @@
+[loggers]
+keys=root,pysilhouette,pysilhouette_trace,sqlalchemy.engine,sqlalchemy.pool,sqlalchemy.orm,pysilhouette.asynscheduler,pysilhouette.asynperformer
+
+[handlers]
+keys=default,pysilhouette,pysilhouette_trace,sqlalchemy.engine,sqlalchemy.pool,sqlalchemy.orm,pysilhouette.asynscheduler,pysilhouette.asynperformer
+
+[formatters]
+keys=default,common
+
+[formatter_default]
+format=[%(asctime)s] [%(levelname)s] %(message)s
+datefmt=%d/%b/%Y:%H:%M:%S
+
+[formatter_common]
+class=logging.Formatter
+format=[%(asctime)s] [%(levelname)s] [%(process)d] [%(name)s] [%(lineno)d] %(message)s
+datefmt=%d/%b/%Y:%H:%M:%S (%Z) 
+
+[handler_default]
+class=StreamHandler
+formatter=default
+args=(sys.stdout,)
+
+[handler_pysilhouette]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/application.log', 'a', (5 *1024 *1024), 5)
+
+[handler_pysilhouette_trace]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/error.log', 'a', (5 *1024 *1024), 5)
+
+[handler_sqlalchemy.engine]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/sql.log', 'a', (5 *1024 *1024), 5)
+
+[handler_sqlalchemy.pool]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/sql.log', 'a', (5 *1024 *1024), 5)
+
+[handler_sqlalchemy.orm]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/sql.log', 'a', (5 *1024 *1024), 5)
+
+[handler_pysilhouette.asynscheduler]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/application.log', 'a', (5 *1024 *1024), 5)
+
+[handler_pysilhouette.asynperformer]
+class=handlers.RotatingFileHandler
+formatter=common
+args=('/var/log/pysilhouette/application.log', 'a', (5 *1024 *1024), 5)
+
+[logger_root]
+level=ERROR
+handlers=default
+
+[logger_pysilhouette]
+level=INFO
+handlers=pysilhouette
+propagate=0
+qualname=pysilhouette
+
+[logger_pysilhouette_trace]
+level=INFO
+handlers=pysilhouette_trace
+propagate=0
+qualname=pysilhouette_trace
+
+[logger_sqlalchemy.engine]
+level=WARNING
+handlers=sqlalchemy.engine
+propagate=0
+qualname=sqlalchemy.engine
+
+[logger_sqlalchemy.pool]
+level=WARNING
+handlers=sqlalchemy.pool
+propagate=0
+qualname=sqlalchemy.pool
+
+[logger_sqlalchemy.orm]
+level=INFO
+handlers=sqlalchemy.orm
+propagate=0
+qualname=sqlalchemy.orm
+
+[logger_pysilhouette.asynscheduler]
+level=WARNING
+handlers=pysilhouette.asynscheduler
+propagate=0
+qualname=pysilhouette.asynscheduler
+
+[logger_pysilhouette.asynperformer]
+level=WARNING
+handlers=pysilhouette.asynperformer
+propagate=0
+qualname=pysilhouette.asynperformer
+

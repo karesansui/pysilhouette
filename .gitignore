@@ -1,0 +1,8 @@
+# Lines that start with '#' are comments.
+*.pyc
+*.pyo
+*~
+*.bak
+*.old
+*.orig
+*.swp

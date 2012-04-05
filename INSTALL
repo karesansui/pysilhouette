@@ -1,0 +1,93 @@
+Installing Pysilhouette
+==========================
+
+Copyright (C) 2009-2010 HDE, Inc.
+
+Redistributing, copying, modifying of this file is granted with no restriction.
+
+Basic Installation
+================================================================================
+Pysilhouette is 100% pure Python so it does not require compling.
+
+using RPM:
+    # rpm -ivh pysilhouette-xxxx.rpm
+
+using easy_install:
+    # easy_install pysilhouette
+
+using setup.py:
+    # python setup.py build
+    # python setup.py install
+
+Creating Database
+================================================================================
+Create database to use for pysilhouette.
+Versions below are supported.
+
+    * SQLite >= 3.3.x
+    * MySQL >= 5.0.x
+    * PostgreSQL >= 8.1.x
+
+Example for SQLite:
+    ex)
+        # sqlite3 /var/lib/pysilhouette/pysilhouette.db
+    
+
+Configuration File
+================================================================================
+Edit database.url of silhouette.conf to use the database created above.
+RFC-1738 styled format required.
+    ex)
+        database.url=sqlite:////var/lib/pysilhouette/pysilhouette.db
+
+silhouette.conf is placed in the directory below by default:
+        /etc/pysilhouette/silhouette.conf
+
+(You can use other by passing parameters on pysilhouette start up)
+
+Register commands to use from pysilhouette.
+Put commands in each line of whitelist.conf.
+    ex) /bin/echo
+        /bin/ls
+        /bin/pwd
+
+whitelist.conf is placed in the directory below by default:
+        /etc/pysilhouette/whitelist.conf
+
+
+Initializing Database
+================================================================================
+Use psil-cleandb to initialize the database.
+    # python tool/psil-cleandb --config /etc/pysilhouette/silhouette.conf
+
+Start Up Command
+================================================================================
+Start up pysilhouette with init script.
+    # /etc/init.d/silhouette start
+
+pysilhouette looks for configuration file in the default location.
+
+How to Register Jobs
+================================================================================
+One can use psil-set to register jobs from command line.
+    # python tool/psil-set --help
+    usage: psil-set [options]
+
+    options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -c CONFIG, --config=CONFIG
+                            configuration file
+      -a ACTION, --action=ACTION
+                            action command
+      -t TYPE, --type=TYPE  Run type. "serial" or "parallel"
+      -m NAME, --name=NAME  action name
+      -r ROLLBACK, --rollback=ROLLBACK
+                            rollback command
+      -f FINISH, --finish=FINISH
+                            finish command
+      -n NUMBER, --number=NUMBER
+                            Test: Number of repeat job
+    ex)
+        # python tool/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial
+

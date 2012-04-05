@@ -1,0 +1,102 @@
+Pysilhouetteのインストール
+==========================
+
+Copyright (C) 2009-2010 HDE, Inc.
+
+このファイルは、無制限にコピーし再配布が可能です。また、配布して変更も可能です。
+
+
+インストール
+================================================================================
+
+100% Pure Pythonで構成されたソフトウェアであるためコンパイルは必要ありません。
+
+RPMからのインストール
+    # rpm -ivh pysilhouette-xxxx.rpm
+
+easy_installからのインストール
+    # easy_install pysilhouette
+
+setup.pyを使用したインストール
+    # python setup.py build
+    # python setup.py install
+
+
+データベースの作成
+================================================================================
+pysilhouetteで使用するデータベースを作成します。
+以下のデータベースが利用可能です。
+
+    * SQLite >= 3.3.x
+    * MySQL >= 5.0.x
+    * PostgreSQL >= 8.1.x
+
+SQLiteの場合は、以下のようにデータベースを作成します。
+
+    例)
+        # sqlite3 /var/lib/pysilhouette/pysilhouette.db
+    
+
+設定ファイルの編集
+================================================================================
+pysilhouetteで使用するデータベースの接続先を設定します。
+    silhouette.confのdatabase.urlを変更します。
+    RFC-1738で定義されているスタイルで設定してください。
+
+    例)
+        database.url=sqlite:////var/lib/pysilhouette/pysilhouette.db
+
+    silhouette.confはデフォルトで以下のディレクトリに設置されています。
+        /etc/pysilhouette/silhouette.conf
+
+    pysilhouetteで実行できるコマンドのホワイトリストを設定します。
+    whitelist.confにpysilhouetteで実行したいコマンドを書きます。
+    コマンドは改行で区切られます。
+
+    例)
+        /bin/echo
+        /bin/ls
+        /bin/pwd
+
+    whitelist.confはデフォルトで以下のディレクトリに設置されています。
+        /etc/pysilhouette/whitelist.conf
+
+
+データベースの初期化
+================================================================================
+psil-cleandbを使用して、データベースを初期化します。
+    # python tool/psil-cleandb --config /etc/pysilhouette/silhouette.conf
+
+
+pysilhouetteの起動
+================================================================================
+起動スクリプトでpysilhouetteを起動します。
+    # /etc/init.d/silhouette start
+
+    起動スクリプトは、デフォルトの設定ファイルの設置場所を参照します。
+        /etc/pysilhouette/silhouette.conf
+
+
+ジョブの登録
+================================================================================
+psil-setを使用して、コマンドラインからジョブを登録することができます。
+    # python tool/psil-set --help
+    usage: psil-set [options]
+
+    options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -c CONFIG, --config=CONFIG
+                            configuration file
+      -a ACTION, --action=ACTION
+                            action command
+      -t TYPE, --type=TYPE  Run type. "serial" or "parallel"
+      -m NAME, --name=NAME  action name
+      -r ROLLBACK, --rollback=ROLLBACK
+                            rollback command
+      -f FINISH, --finish=FINISH
+                            finish command
+      -n NUMBER, --number=NUMBER
+                            Test: Number of repeat job
+    ex)
+        # python tool/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial

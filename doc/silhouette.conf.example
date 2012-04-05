@@ -1,0 +1,95 @@
+##
+# Environment variables
+#
+env.python=/usr/bin/python
+env.sys.log.conf.path=/etc/pysilhouette/log.conf
+# To set a unique key, please.
+#     command : python uniqkey.py
+env.uniqkey=aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa
+
+##
+# daemon
+daemon.stdin=/dev/null
+daemon.stdout=/var/log/pysilhouette/stdout.log
+daemon.stderr=/var/log/pysilhouette/stderr.log
+
+##
+# observer
+observer.target.python=/usr/bin/python
+observer.target.scheduler=/usr/lib/python2.6/site-packages/pysilhouette/scheduler.py
+observer.target.performer=/usr/lib/python2.6/site-packages/pysilhouette/performer.py
+observer.target.asynscheduler=/usr/lib/python2.6/site-packages/pysilhouette/asynscheduler.py
+observer.target.asynperformer=/usr/lib/python2.6/site-packages/pysilhouette/asynperformer.py
+observer.restart.count=5
+#  - Clear intervals. 0=Infinite
+observer.restart.count.clear.time=600
+#  - Check interval
+observer.check.interval=300
+#  - Output status information
+observer.status.path=/var/lib/pysilhouette/status
+
+##
+# performer
+performer.mkfifo.group.name=pysilhouette
+performer.mkfifo.stop.code=2
+performer.mkfifo.ignore.code=1
+performer.mkfifo.path=/tmp/pysilhouette-performer.fifo
+performer.mkfifo.start.code=0
+performer.mkfifo.user.name=pysilhouette
+performer.mkfifo.perms=0666
+
+##
+# asynperformer
+asynperformer.mkfifo.group.name=pysilhouette
+asynperformer.mkfifo.stop.code=2
+asynperformer.mkfifo.ignore.code=1
+asynperformer.mkfifo.path=/tmp/pysilhouette-asynperformer.fifo
+asynperformer.mkfifo.start.code=0
+asynperformer.mkfifo.user.name=pysilhouette
+asynperformer.mkfifo.perms=0666
+asynscheduler.interval=10
+asynperformer.thread.pool.size=5
+
+##
+# scheduler
+scheduler.interval=10
+
+
+##
+# job
+job.popen.env.lang=C
+job.popen.timeout=3600
+job.popen.waittime=1
+job.popen.output.limit=1048576
+# 1 or Other
+job.whitelist.flag=1
+job.whitelist.path=/etc/pysilhouette/whitelist.conf
+
+##
+# Database RFC-1738 style URLs.
+# - driver://username:password@host:port/database
+#
+# postgresql :
+#   database.url=postgres://silhouette:<password>@localhost:5432/silhouette
+#
+# mysql :
+#   database.url=mysql://localhost/silhouette
+#   or
+#   database.url=mysql://silhouette:<password>@localhost/silhouette
+#
+# oracle
+#   database.url=oracle://scott:tiger@dsn - TNS
+#   database.url=oracle://scott:tiger@127.0.0.1:1521/sidname - host/port/SID
+#
+# sqlite
+#   database.url=sqlite:////absolute/path/to/silhouette.db - absolute path
+#   database.url=sqlite:///relative/path/to/silhouette.db - relative path
+#   database.url=sqlite:// - in memory
+#   database.url=sqlite://:memory: - in memory
+#
+#database.url=sqlite:///:memory:
+database.url=sqlite:////var/lib/pysilhouette/pysilhouette.db
+database.pool.status=0
+database.pool.max.overflow=10
+database.pool.size=1
+

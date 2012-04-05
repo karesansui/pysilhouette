@@ -1,0 +1,100 @@
+#!/usr/bin/make -f
+
+DEB_PYTHON_SYSTEM := pysupport
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+#include /usr/share/cdbs/1/class/makefile.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+# Add here any variable or target overrides you need.
+
+PROJECT=pysilhouette
+PROG=silhouette
+
+DEB_PYTHON_INSTALL_ARGS_ALL = --record=INSTALLED_FILES
+
+clean::
+	rm -rf build build-stamp configure-stamp build/ MANIFEST
+	python setup.py clean
+	find . -name '*\.py[co]' -delete
+
+build:
+
+install/pysilhouette::
+	install -c -m 644 $(CURDIR)/doc/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf.example
+	install -c -m 644 $(CURDIR)/doc/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf
+	
+	install -c -m 644 $(CURDIR)/doc/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf.example
+	install -c -m 644 $(CURDIR)/doc/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf
+	
+	install -c -m 644 $(CURDIR)/doc/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf.example
+	install -c -m 644 $(CURDIR)/doc/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf
+	
+	dh_installinit --name=silhouetted
+	dh_installinit --name=schedulerd
+	dh_installinit --name=performerd
+	dh_link /usr/lib/python2.6/site-packages/$(PROJECT)/$(PROG).py usr/bin/$(PROG).py
+	
+
+#binary-install/pysilhouette::
+#	dh_installdocs -p$(cdbs_curpkg)$ $(DEB_INSTALL_DOCS_ALL) $(DEB_INSTALL_DOCS_$(cdbs_curpkg))
+#	dh_installexamples -p(cdbs_curpkg) $(DEB_INSTALL_EXAMPLES_$(cdbs_curpkg))
+#	dh_installman -p$(cdbs_curpkg) $(DEB_INSTALL_MANPAGES_$(cdbs_curpkg)) 
+#	dh_installinfo -p$(cdbs_curpkg) $(DEB_INSTALL_INFO_$(cdbs_curpkg)) 
+#	dh_installmenu -p$(cdbs_curpkg) $(DEB_DH_INSTALL_MENU_ARGS)
+#	dh_installcron -p$(cdbs_curpkg) $(DEB_DH_INSTALL_CRON_ARGS)
+#	dh_installinit -p$(cdbs_curpkg) $(if $(DEB_UPDATE_RCD_PARAMS),--update-rcd-params="$(call cdbs_strip_quotes,$(DEB_UPDATE_RCD_PARAMS))",$(if $(DEB_UPDATE_RCD_PARAMS_$(cdbs_curpkg)),--update-rcd-params="$(call cdbs_strip_quotes,$(DEB_UPDATE_RCD_PARAMS_$(cdbs_curpkg)))")) $(DEB_DH_INSTALLINIT_ARGS) 
+#	dh_installdebconf -p$(cdbs_curpkg) $(DEB_DH_INSTALLDEBCONF_ARGS)
+#	dh_installemacsen -p$(cdbs_curpkg) $(if $(DEB_EMACS_PRIORITY),--priority=$(DEB_EMACS_PRIORITY)) $(if $(DEB_EMACS_FLAVOR),--flavor=$(DEB_EMACS_FLAVOR)) $(DEB_DH_INSTALLEMACSEN_ARGS)
+#	dh_installcatalogs -p$(cdbs_curpkg) $(DEB_DH_INSTALLCATALOGS_ARGS)
+#	dh_installpam -p$(cdbs_curpkg) $(DEB_DH_INSTALLPAM_ARGS)
+#	dh_installlogrotate -p$(cdbs_curpkg) $(DEB_DH_INSTALLLOGROTATE_ARGS)
+#	dh_installlogcheck -p$(cdbs_curpkg) $(DEB_DH_INSTALLLOGCHECK_ARGS)
+#	dh_installchangelogs -p$(cdbs_curpkg) $(DEB_DH_INSTALLCHANGELOGS_ARGS) $(DEB_INSTALL_CHANGELOGS_ALL) $(DEB_INSTALL_CHANGELOGS_$(cdbs_curpkg))
+#	$(if $(wildcard /usr/bin/dh_installudev),dh_installudev -p$(cdbs_curpkg) $(DEB_DH_INSTALLUDEV_ARGS))
+#	$(if $(wildcard /usr/bin/dh_lintian),dh_lintian -p$(cdbs_curpkg) $(DEB_DH_LINTIAN_ARGS))
+#	dh_install -p$(cdbs_curpkg) $(if $(DEB_DH_INSTALL_SOURCEDIR),--sourcedir=$(DEB_DH_INSTALL_SOURCEDIR)) $(DEB_DH_INSTALL_ARGS)
+#	dh_link -p$(cdbs_curpkg) $(DEB_DH_LINK_ARGS) $(DEB_DH_LINK_$(cdbs_curpkg))
+#	dh_installmime -p$(cdbs_curpkg) $(DEB_DH_INSTALLMIME_ARGS)
+
+#binary-makedeb-IMPL/pysilhouette::
+#	dh_gencontrol -p$(cdbs_curpkg) $(DEB_DH_GENCONTROL_ARGS)
+#	
+#	# symlink identical documentation to depending packages
+#	[ -n "$$CDBS_NO_DOC_SYMLINKING" ] || \
+#	[ -h debian/$(cdbs_curpkg)/usr/share/doc ] || \
+#	[ ! -d debian/$(cdbs_curpkg)/usr/share/doc ] || \
+#	for dep in `perl -ne 'if (/^(Pre-)?Depends:/) {s/^\w+://; foreach (split /,/) { split; print($$_[0], "\n"); } }' debian/$(cdbs_curpkg)/DEBIAN/control`; do \
+#		if [ -d debian/$$dep/usr/share/doc ]; then \
+#			echo "Searching for duplicated docs in dependency $$dep..."; \
+#			rootdir=`pwd`; \
+#			(cd debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg); find -type f ! -name copyright | while read f; do \
+#				thisfile="$$rootdir/debian/$(cdbs_curpkg)/usr/share/doc/$(cdbs_curpkg)/$$f"; \
+#				depfile="$$rootdir/debian/$$dep/usr/share/doc/$$dep/$$f"; \
+#				if [ -f $$depfile -o -L $$depfile ] && zcmp $$thisfile $$depfile >/dev/null; then \
+#					echo "  symlinking $$f in $(cdbs_curpkg) to file in $$dep"; \
+#					rm $$thisfile; ln -s /usr/share/doc/$$dep/$$f $$thisfile; \
+#				fi; \
+#			done ); \
+#		fi; \
+#	done
+#
+#	# symlink identical Gnome help files within packages
+#	if [ -z "$$CDBS_NO_GNOME_HELP_SYMLINKING" ] && [ -d debian/$(cdbs_curpkg)/usr/share/gnome/help ]; then \
+#		cd debian/$(cdbs_curpkg) && LC_ALL=C fdupes -r1nq usr/share/gnome/help | while read s; do \
+#			set -- $$(echo $$s | tr ' ' '\n' | sort); \
+#			f=$$1; shift; \
+#			for d; do \
+#				echo "symlinking duplicate Gnome help file $$d to $$f"; \
+#				rm $$d; ln -s /$$f $$d; \
+#			done; \
+#		done; \
+#	fi
+#
+#	# fix absolute symlinks created above to be relative
+#	dh_link -p $(cdbs_curpkg)
+#
+#	dh_md5sums -p$(cdbs_curpkg) $(DEB_DH_MD5SUMS_ARGS)
+#	$(DEB_DH_BUILDDEB_ENV) dh_builddeb -p$(cdbs_curpkg) $(DEB_DH_BUILDDEB_ARGS)
+
+.PHONY: clean build intall install-pysilhouette

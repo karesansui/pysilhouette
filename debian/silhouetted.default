@@ -1,0 +1,9 @@
+# pysilhouetted Configuration.
+PREFIX=""
+USER="root"
+GROUP="root"
+PYTHON="/usr/bin/python"
+DAEMON="yes"
+DEBUG="no"
+# PYTHON_SEARCH_PATH={BAR}:{FOO}
+PYTHON_SEARCH_PATH="/usr/lib/python:/usr/lib/python2.6"

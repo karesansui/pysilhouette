@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# asynschedulerd   The stop script of the child process(asynscheduler.py) of the Pysilhouette system.
+#
+# processname: asynschedulerd
+# pidfile: /var/run/asynschedulerd.pid
+# lockfile: /var/lock/subsys/asynschedulerd
+
+source /etc/rc.d/init.d/functions
+
+# Default value
+prog="asynscheduler"
+progd="asynschedulerd"
+
+sysconfig="/etc/sysconfig/${progd}"
+
+if [ "x${PYTHON}" = "x" ]; then
+  PYTHON=`which python`
+fi
+
+# Process id file.
+pidfile="/var/run/${progd}.pid"
+
+desc="${progd} (Daemon)"
+
+stop() {
+    echo -n $"Shutting down $desc: "
+    if [ ! -e ${pidfile} ]; then
+        echo "not running..."
+        return 1
+    fi
+#    pid=`cat ${pidfile}`
+#    if [ "x${pid}" == "x" ]; then
+#        echo "not running... - not pid"
+#        rm -f ${pidfile}
+#        return 1
+#    fi
+    killproc -p ${pidfile} -15
+#    kill ${pid}
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        success
+    else
+        failure
+    fi
+    echo
+    return $RETVAL
+}
+
+err_msg="Please execute \"/etc/rc.d/init.d/silhouetted $1\""
+
+case "$1" in
+    start)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    condrestart)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    status)
+        status ${progd}
+        RETVAL=$?
+        ;;
+    *)
+        echo $"Usage: $0 {stop|status}"
+        RETVAL=1
+esac
+
+exit $RETVAL

@@ -1,0 +1,152 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# This file is part of Pysilhouette.
+#
+# Copyright (c) 2009-2010 HDE, Inc.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+"""
+@author: Kei Funagayama <kei.funagayama@hde.co.jp>
+"""
+
+import sys
+import os
+import os.path
+import logging
+from optparse import OptionParser
+
+from pysilhouette.prep import readconf
+from pysilhouette.db import Database, reload_mappers
+from pysilhouette.db.model import JobGroup, Job, JOBGROUP_TYPE
+from pysilhouette import __version__
+
+usage = '%prog [options]'
+
+def getopts():
+    optp = OptionParser(usage=usage, version=__version__)
+    optp.add_option('-c', '--config', dest='config', help='configuration file')
+    optp.add_option('-a', '--action', dest='action', action="store", type='string',
+                    help='action command')
+    optp.add_option('-t', '--type', dest='type', action="store", type='string',
+                    help='Run type. "serial" or "parallel"')
+    optp.add_option('-m', '--name', dest='name', action="store", type='string',
+                    help='action name')
+    optp.add_option('-r', '--rollback', dest='rollback', action="store", type='string',
+                    help='rollback command')
+    optp.add_option('-f', '--finish', dest='finish', action="store", type='string',
+                    help='finish command')
+    optp.add_option('-n', '--number', dest='number', action="store", type='int',
+                    help='Test: Number of repeat job', default=1)
+
+    return optp.parse_args()
+
+def chkopts(opts):
+    if opts.config is None:
+        print >>sys.stderr, '-c or --config option is required.'
+        return True
+
+    if os.path.isfile(opts.config) is False:
+        print >>sys.stderr, '-c or --config file is specified in the option does not exist.'
+        return True
+
+    if opts.name is None:
+        print >>sys.stderr, '-m or --name option is required.'
+        return True
+
+    if opts.action is None:
+        print >>sys.stderr, '-a or --action option is required.'
+        return True
+
+    if opts.type is None:
+        print >>sys.stderr, '-t or --type option is required.'
+        return True
+
+    return False
+
+def main():
+    (opts, args) = getopts()
+    if chkopts(opts) is True:
+        return 1
+    
+    try:
+        opts.config = os.path.abspath(opts.config)
+    except AttributeError, e:
+        print >>sys.stderr, 'No configuration file path.'
+        return 1
+    
+    cf = readconf(opts.config)
+    if cf is None:
+        print >>sys.stderr, 'Failed to load the config file.'
+        return 1
+    
+    try:
+        db = Database(cf['database.url'],
+                      encoding="utf-8",
+                      convert_unicode=True,
+                      #assert_unicode='warn', # DEBUG
+                      #echo = opts.verbose,
+                      #echo_pool = opts.verbose,
+                      echo=True, # TODO
+                      echo_pool=True # TODO
+                      )
+
+        reload_mappers(db.get_metadata())
+        session = db.get_session()
+        
+    except Exception, e:
+        print >>sys.stderr, 'Initializing a database error'
+        raise
+    
+    try:
+        jgs = []
+        for i in range(opts.number):
+            jg_name = u'%s-%d' % (opts.name, i)
+            jg_ukey = unicode(cf['env.uniqkey'], "utf-8") 
+            jg = JobGroup(jg_name, jg_ukey)
+            if not opts.finish is None:
+                jg.finish_command = unicode(opts.finish, "utf-8")
+            if opts.type == 'serial':
+                jg.type = JOBGROUP_TYPE['SERIAL']
+            elif opts.type == 'parallel':
+                jg.type = JOBGROUP_TYPE['PARALLEL']
+            else:
+                jg.type = JOBGROUP_TYPE['SERIAL']
+
+            j_name = u'%s-%d' % (opts.name, i)
+            j_order = i
+            j = Job(j_name, j_order, unicode(opts.action, "utf-8"))
+            if not opts.rollback is None:
+                j.rollback_command = unicode(opts.rollback, "utf-8")
+
+            jg.jobs.append(j)
+            jgs.append(jg)
+            
+        session.add_all(jgs)
+        session.commit()
+        session.close()
+        print >>sys.stdout, 'Insert JobGroup and Job. num=%d [OK]' % opts.number
+    except Exception, e:
+        print >>sys.stderr, 'Failed to add JobGroup and Job.'
+        raise
+            
+if __name__ == '__main__':
+    sys.exit(main())

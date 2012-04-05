@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# performerd   The stop script of the child process(performer.py) of the Pysilhouette system.
+#
+# processname: performerd
+# pidfile: /var/run/performerd
+# lockfile: /var/lock/subsys/performerd
+
+source /etc/rc.d/init.d/functions
+
+# Default value
+prog="performer"
+progd="performerd"
+stop_code='2'
+fifo='/tmp/pysilhouette-performer.fifo'
+
+sysconfig="/etc/sysconfig/${progd}"
+
+if [ "x${PYTHON}" = "x" ]; then
+  PYTHON=`which python`
+fi
+
+# Process id file.
+pidfile="/var/run/${progd}.pid"
+
+desc="${progd} (Daemon)"
+
+stop() {
+    echo -n $"Shutting down $desc: "
+    if [ ! -e ${pidfile} ]; then
+        echo "not running..."
+        return 1
+    fi
+    pid=`cat ${pidfile}`
+    if [ "x${pid}" == "x" ]; then
+        echo "not running... - not pid"
+        rm -f ${pidfile}
+        return 1
+    fi
+    [ -w "${fifo}" ] && echo -n $stop_code >> ${fifo}
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        success
+    else
+        failure
+    fi
+    echo
+    return $RETVAL
+}
+
+err_msg="Please execute \"/etc/rc.d/init.d/silhouetted $1\""
+
+case "$1" in
+    start)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    condrestart)
+        echo ${err_msg}
+        RETVAL=1
+        ;;
+    status)
+        status ${progd}
+        RETVAL=$?
+        ;;
+    *)
+        echo $"Usage: $0 {stop|status}"
+        RETVAL=1
+esac
+
+exit $RETVAL
