@@ -71,7 +71,8 @@ Directory Structure
 |   |-- silhouetted.default
 |   `-- silhouetted.init
 |-- doc
-|   |-- epydoc.cfg # Configuration file for epydoc
+|   `-- epydoc.cfg # Configuration file for epydoc
+|-- sample # Sample programs using pysilhouette.
 |   |-- log.conf.example # Example config file for logging function.
 |   |-- rc.d
 |   |   `-- init.d
@@ -81,16 +82,16 @@ Directory Structure
 |   |       |-- schedulerd # init script for the scheduler daemon
 |   |       `-- silhouetted # init script for the watch daemon
 |   |-- redhat.spec # Spec file for RPM building.
+|   |-- scripts
+|   |   |-- dummy.py
+|   |   |-- insert_dummy.py
+|   |   |-- sendmail.py
+|   |   |-- test_failure.py
+|   |   `-- test_success.py
 |   |-- silhouette.conf.example # Example config file for Pysilhouette
 |   |-- sysconfig
 |   |   `-- silhouetted
 |   `-- whitelist.conf.example # Example config file for whitelist function
-|-- example # Sample programs using pysilhouette.
-|   |-- dummy.py
-|   |-- insert_dummy.py
-|   |-- sendmail.py
-|   |-- test_failure.py
-|   `-- test_success.py
 |-- pysilhouette
 |   |-- __init__.py
 |   |-- asynperformer.py
@@ -118,7 +119,7 @@ Directory Structure
 |   `-- worker.py
 |-- setup.cfg # Configuration for distutils packaging.
 |-- setup.py # Main command for distutils packaging.
-`-- tool # Tools for development/operation.
+`-- tools # Tools for development/operation.
     |-- epydoc.sh
     |-- psil-cleandb
     |-- psil-set
