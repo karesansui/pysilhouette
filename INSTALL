@@ -58,7 +58,7 @@ whitelist.conf is placed in the directory below by default:
 Initializing Database
 ================================================================================
 Use psil-cleandb to initialize the database.
-    # python tool/psil-cleandb --config /etc/pysilhouette/silhouette.conf
+    # python tools/psil-cleandb --config /etc/pysilhouette/silhouette.conf
 
 Start Up Command
 ================================================================================
@@ -70,7 +70,7 @@ pysilhouette looks for configuration file in the default location.
 How to Register Jobs
 ================================================================================
 One can use psil-set to register jobs from command line.
-    # python tool/psil-set --help
+    # python tools/psil-set --help
     usage: psil-set [options]
 
     options:
@@ -89,5 +89,5 @@ One can use psil-set to register jobs from command line.
       -n NUMBER, --number=NUMBER
                             Test: Number of repeat job
     ex)
-        # python tool/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial
+        # python tools/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial
 

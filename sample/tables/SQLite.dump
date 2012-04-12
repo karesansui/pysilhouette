@@ -1,0 +1,33 @@
+CREATE TABLE jobgroup (
+	id INTEGER NOT NULL, 
+	name VARCHAR(512) NOT NULL, 
+	uniq_key VARCHAR(36) NOT NULL, 
+	finish_command VARCHAR(1024), 
+	type INTEGER NOT NULL, 
+	status VARCHAR(3) NOT NULL, 
+	register VARCHAR(32), 
+	created TIMESTAMP, 
+	modified TIMESTAMP, 
+	PRIMARY KEY (id)
+);
+CREATE TABLE job (
+	id INTEGER NOT NULL, 
+	jobgroup_id INTEGER NOT NULL, 
+	name VARCHAR(32) NOT NULL, 
+	"order" INTEGER NOT NULL, 
+	action_command VARCHAR(1024) NOT NULL, 
+	rollback_command VARCHAR(1024), 
+	status VARCHAR(3) NOT NULL, 
+	action_exit_code INTEGER, 
+	action_stdout TEXT, 
+	action_stderr TEXT, 
+	rollback_exit_code INTEGER, 
+	rollback_stdout TEXT, 
+	rollback_stderr TEXT, 
+	progress INTEGER NOT NULL, 
+	created TIMESTAMP, 
+	modified TIMESTAMP, 
+	PRIMARY KEY (id), 
+	 FOREIGN KEY(jobgroup_id) REFERENCES jobgroup (id)
+);
+CREATE INDEX ix_job_jobgroup_id ON job (jobgroup_id);

@@ -21,14 +21,14 @@ clean::
 build:
 
 install/pysilhouette::
-	install -c -m 644 $(CURDIR)/doc/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf.example
-	install -c -m 644 $(CURDIR)/doc/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf
+	install -c -m 644 $(CURDIR)/sample/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf.example
+	install -c -m 644 $(CURDIR)/sample/log.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/log.conf
 	
-	install -c -m 644 $(CURDIR)/doc/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf.example
-	install -c -m 644 $(CURDIR)/doc/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf
+	install -c -m 644 $(CURDIR)/sample/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf.example
+	install -c -m 644 $(CURDIR)/sample/$(PROG).conf.example $(DEB_DESTDIR)etc/$(PROJECT)/$(PROG).conf
 	
-	install -c -m 644 $(CURDIR)/doc/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf.example
-	install -c -m 644 $(CURDIR)/doc/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf
+	install -c -m 644 $(CURDIR)/sample/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf.example
+	install -c -m 644 $(CURDIR)/sample/whitelist.conf.example $(DEB_DESTDIR)etc/$(PROJECT)/whitelist.conf
 	
 	dh_installinit --name=silhouetted
 	dh_installinit --name=schedulerd
