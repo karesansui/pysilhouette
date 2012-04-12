@@ -57,7 +57,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 mkdir -p $RPM_BUILD_ROOT/var/log/%{__app}/
 mkdir -p $RPM_BUILD_ROOT%{_psi_datadir}
 
-pushd doc
+pushd sample
 install -c -m 644 log.conf.example $RPM_BUILD_ROOT%{_psi_sysconfdir}/log.conf.example
 install -c -m 644 log.conf.example $RPM_BUILD_ROOT%{_psi_sysconfdir}/log.conf
 
@@ -71,8 +71,8 @@ install -c -m 644 rc.d/init.d/* $RPM_BUILD_ROOT%{_initrddir}/
 install -c -m 644 sysconfig/%{__progd} $RPM_BUILD_ROOT/etc/sysconfig/%{__progd}
 popd
 
-install -c -m 744 tool/psil-cleandb $RPM_BUILD_ROOT%{_psi_bindir}
-install -c -m 744 tool/psil-set $RPM_BUILD_ROOT%{_psi_bindir}
+install -c -m 744 tools/psil-cleandb $RPM_BUILD_ROOT%{_psi_bindir}
+install -c -m 744 tools/psil-set $RPM_BUILD_ROOT%{_psi_bindir}
 
 chmod +x %{__app}/%{__prog}.py
 
@@ -133,7 +133,7 @@ fi
 
 %files -f INSTALLED_FILES
 %defattr(-,root,root)
-%doc doc tool MANIFEST.in LICENSE example AUTHORS ChangeLog INSTALL INSTALL.ja README README.ja setup.cfg setup.py debian
+%doc doc tools MANIFEST.in LICENSE sample AUTHORS ChangeLog INSTALL INSTALL.ja README README.ja setup.cfg setup.py debian
 %dir %attr(0755, root, root) %{_psi_sysconfdir}
 %attr(0755, root, root) %{_initrddir}/*
 %attr(0644, root, root) %config(noreplace) %{_psi_sysconfdir}/log.conf
@@ -150,7 +150,7 @@ fi
 %dir %{_psi_datadir}
 
 %changelog
-* Mon Apr  2 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-1
+* Mon Apr  2 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.0-1
 - 0.8.0 released.
 
 * Fri Jul 29 2010 Kei Funagayama <kei.topaz@gmail.com> - 0.7.0-1

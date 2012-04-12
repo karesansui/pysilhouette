@@ -18,12 +18,9 @@ pysilhouetteは、以下の特長を持っています。
 
 入手法
 ================================================================================
-以下の場所からRPM、ソースRPM、tarボールがダウンロードできます。
-    http://sourceforge.jp/projects/pysilhouette/
-
 pysilhouetteはリポジトリにGitを採用しています。
 最新のソースコードは次のコマンドで取得できます。
-    # git clone git://git.sourceforge.jp/gitroot/pysilhouette/pysilhouette.git.git
+    # git clone https://github.com/karesansui/pysilhouette
 
 
 ホームページ
@@ -61,7 +58,7 @@ PostgreSQLを使用する場合
 |-- INSTALL.ja # 日本語版インストールマニュアル
 |-- LICENSE # ライセンス
 |-- MANIFEST.in # distutilsを利用したパッケージングをするのに使用する。
-|-- README # 英語語版インストールマニュアル
+|-- README # 英語版インストールマニュアル
 |-- README.ja # 日本語版インストールマニュアル
 |-- debian # 仮
 |   |-- README.Debian
@@ -82,7 +79,8 @@ PostgreSQLを使用する場合
 |   |-- silhouetted.default
 |   `-- silhouetted.init
 |-- doc # ドキュメントや設定ファイル関連置き場
-|   |-- epydoc.cfg # epydoc設定ファイル
+|   `-- epydoc.cfg # epydoc設定ファイル
+|-- sample # サンプルプログラム関連
 |   |-- log.conf.example # ログ設定ファイルのテンプレート
 |   |-- rc.d # 起動スクリプト
 |   |   `-- init.d
@@ -92,16 +90,16 @@ PostgreSQLを使用する場合
 |   |       |-- schedulerd # 逐次処理用スケジュールデーモンの起動スクリプト
 |   |       `-- silhouetted # アプリケーション(監視を含む)の起動スクリプト
 |   |-- redhat.spec # RPM用のspecファイル
+|   |-- scripts
+|   |   |-- dummy.py
+|   |   |-- insert_dummy.py
+|   |   |-- sendmail.py
+|   |   |-- test_failure.py
+|   |   `-- test_success.py
 |   |-- silhouette.conf.example # Pysilhouette設定ファイルのテンプレート
 |   |-- sysconfig # システム設定ファイル
 |   |   `-- silhouetted
 |   `-- whitelist.conf.example # ホワイトリスト設定ファイルのテンプレート
-|-- example # サンプルプログラム関連
-|   |-- dummy.py
-|   |-- insert_dummy.py
-|   |-- sendmail.py
-|   |-- test_failure.py
-|   `-- test_success.py
 |-- pysilhouette # プログラム本体
 |   |-- __init__.py
 |   |-- asynperformer.py
@@ -129,7 +127,7 @@ PostgreSQLを使用する場合
 |   `-- worker.py
 |-- setup.cfg # distutilsを利用したパッケージングをするのに使用する設定ファイル
 |-- setup.py # distutilsを利用したパッケージングをするのに使用する実行ファイル
-`-- tool # 開発時や運用時に利用するコマンドベースの実行ファイル
+`-- tools # 開発時や運用時に利用するコマンドベースの実行ファイル
     |-- epydoc.sh # Javadoc風なドキュメントを自動生成する実行ファイル
     |-- psil-cleandb # Databaseを初期化する実行ファイル
     |-- psil-set # コマンドラインからジョブコマンドを登録する実行ファイル

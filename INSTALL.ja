@@ -65,7 +65,7 @@ pysilhouetteで使用するデータベースの接続先を設定します。
 データベースの初期化
 ================================================================================
 psil-cleandbを使用して、データベースを初期化します。
-    # python tool/psil-cleandb --config /etc/pysilhouette/silhouette.conf
+    # python tools/psil-cleandb --config /etc/pysilhouette/silhouette.conf
 
 
 pysilhouetteの起動
@@ -80,7 +80,7 @@ pysilhouetteの起動
 ジョブの登録
 ================================================================================
 psil-setを使用して、コマンドラインからジョブを登録することができます。
-    # python tool/psil-set --help
+    # python tools/psil-set --help
     usage: psil-set [options]
 
     options:
@@ -99,4 +99,4 @@ psil-setを使用して、コマンドラインからジョブを登録するこ
       -n NUMBER, --number=NUMBER
                             Test: Number of repeat job
     ex)
-        # python tool/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial
+        # python tools/psil-set --config /etc/pysilhouette/silhouette.conf --action "/bin/echo 'action command'" --name=hoge --type=serial
