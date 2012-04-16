@@ -4,8 +4,8 @@
 env.python=/usr/bin/python
 env.sys.log.conf.path=/etc/pysilhouette/log.conf
 # To set a unique key, please.
-#     command : python uniqkey.py
-env.uniqkey=aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa
+#     command : python uniqkey.py or uuidgen
+env.uniqkey=2f21b1be-a132-415b-aab6-03cccecb6d7c
 
 ##
 # daemon
