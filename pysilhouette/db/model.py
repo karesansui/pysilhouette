@@ -227,7 +227,7 @@ if __name__ == '__main__':
         u'Yum Update httpd',
         '2',
         '/usr/bin/yum update httpd'))
-    session.save(jg)
+    session.add(jg)
     jg1 = JobGroup(u'get date', '172.16.0.123')
     jg1.jobs.append(Job(u'get date','0', '/bin/date'))
     jg2 = JobGroup(u'get route', '172.16.0.123')
@@ -248,7 +248,7 @@ if __name__ == '__main__':
     jg.name = 'All Update - edit'
     for j in jg.jobs:
         j.name = 'All Update - edit'
-    session.update(jg)
+    session.add(jg)
     session.commit()
 
     # DELETE + Manual CASCADE

@@ -85,11 +85,11 @@ def jobgroup_update(session, m_jg, status, autocommit=True):
 # Edit
 @dbsave
 def save(session, model):
-    return session.save(model)
+    return session.add(model)
 
 @dbupdate
 def update(session, model):
-    return session.update(model)
+    return session.add(model)
 
 @dbdelete
 def delete(session, model):
