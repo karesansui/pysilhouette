@@ -12,7 +12,7 @@
 
 %define _psi_sysconfdir %{_sysconfdir}/%{__app}
 %define _psi_bindir     %{_bindir}
-%define _psi_datadir    %{_sharedstatedir}/%{__app}
+%define _psi_datadir    %{_localstatedir}/lib/%{__app}
 
 %define _user           pysilhouette
 %define _group          pysilhouette
@@ -109,14 +109,14 @@ if [ $? -ne 0 ]; then
     fi
     __uid=`expr ${__uid} + 1`
   done
-  /usr/sbin/useradd -c "pysilhouette" -u ${_uid} -g %{_group} -s /bin/false -r %{_user} 2> /dev/null || :
+  /usr/sbin/useradd -c "Pysilhouette Job Manager" -u ${_uid} -g %{_group} -d %{_psi_datadir} -s /bin/false -r %{_user} 2> /dev/null || :
 fi
 
 %post
 #echo "%{__ln_s} %{python_sitelib}/%{__app}/%{__prog}.py %{_psi_bindir}"
 %{__ln_s} %{python_sitelib}/%{__app}/%{__prog}.py %{_psi_bindir}
-if [ ! -e %{__datadir} ]; then
-  mkdir -p %{__datadir} 2> /dev/null
+if [ ! -e %{_psi_datadir} ]; then
+  mkdir -p %{_psi_datadir} 2> /dev/null
 fi
 %{__chkconfig} --add silhouetted >/dev/null 2>&1
 %{__chkconfig} silhouetted on >/dev/null 2>&1
