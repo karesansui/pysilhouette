@@ -190,7 +190,9 @@ start_server() {
     if [ "x$PYTHON_SEARCH_PATH" != "x" ]; then
         ENV="PYTHONPATH=$PYTHON_SEARCH_PATH:\$PYTHONPATH"
     fi
-    $SU -l $DAEMONUSER -c "$ENV $PYTHON ${PREFIX}${DAEMON} $DAEMON_OPTS"
+    eval "export $ENV"
+    $PYTHON ${PREFIX}${DAEMON} $DAEMON_OPTS
+
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
         echo "[OK]"
