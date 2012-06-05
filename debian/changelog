@@ -1,3 +1,9 @@
+pysilhouette (0.8.0-1) stable; urgency=low
+
+  * Support for python 2.6.
+
+ -- Taizo Ito <taizo@karesansui-project.info>  Tue, 05 Jun 2012 14:55:42 +0900
+
 pysilhouette (0.6.2-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
