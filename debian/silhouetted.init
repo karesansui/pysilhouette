@@ -56,7 +56,7 @@ PERFORMER_PIDFILE="/var/run/${PERFORMER_DAEMON_NAME}.pid"
 SCHEDULER_INIT_D="/etc/init.d/${SCHEDULER_DAEMON_NAME}"
 PERFORMER_INIT_D="/etc/init.d/${PERFORMER_DAEMON_NAME}"
 
-test -x $DAEMON || exit 0
+test -e $DAEMON || exit 0
 
 . /lib/lsb/init-functions
 
