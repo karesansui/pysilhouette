@@ -1,3 +1,9 @@
+pysilhouette (0.8.1-1) stable; urgency=low
+
+  * Allow to parse command arguments included spaces.
+
+ -- Taizo Ito <taizo@karesansui-project.info>  Wed, 20 Jun 2012 17:35:40 +0900
+
 pysilhouette (0.8.0-1) stable; urgency=low
 
   * Support for python 2.6.
