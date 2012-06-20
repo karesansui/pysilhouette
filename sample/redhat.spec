@@ -1,7 +1,7 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %define name    pysilhouette
-%define version 0.8.0
+%define version 0.8.1
 %define release 1
 
 %define __python        $(which python)
@@ -150,6 +150,10 @@ fi
 %dir %{_psi_datadir}
 
 %changelog
+* Wed Jun 20 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-1
+- 0.8.1 released.
+- Allow to parse command arguments included spaces.
+
 * Mon Apr  2 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.0-1
 - 0.8.0 released.
 
