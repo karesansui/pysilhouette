@@ -51,7 +51,11 @@ def astrftime(tm):
 def split_shell_command(cmd):
     ret = []
     if is_empty(cmd) is False:
-        vs =cmd.split(' ')
+        try:
+            import shlex
+            vs = shlex.split(cmd.encode('utf8'))
+        except:
+            vs = cmd.split(' ')
         for v in vs:
             v = v.strip()
             if is_empty(v): continue
