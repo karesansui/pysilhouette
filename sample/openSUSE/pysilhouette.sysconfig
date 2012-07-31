@@ -1,0 +1,23 @@
+## Path:        Virtualization/{XEN|KVM}
+## Description: PySilhouette background daemon
+## Type:        string
+## Default:     pysilhouette
+# 
+# program name
+# 
+PSIL_PROG="pysilhouette"
+
+## Type:        string
+## Default:     psil
+# 
+# PSIL Group
+#
+PSIL_GROUP="psil"
+
+## Type:        string
+## Default:     psil
+# 
+# PSIL User
+#
+PSIL_USER="psil"
+
