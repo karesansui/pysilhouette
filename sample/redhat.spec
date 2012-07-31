@@ -2,7 +2,7 @@
 
 %define name    pysilhouette
 %define version 0.8.1
-%define release 1
+%define release 2
 
 %define __python        $(which python)
 %define __chkconfig     /sbin/chkconfig
@@ -33,6 +33,7 @@ Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Prefix:         %{_prefix}
 BuildArch:      noarch
+BuildRequires:  python-setuptools
 
 %description
 Pysilhouette is a python-based background job manager,
@@ -150,6 +151,9 @@ fi
 %dir %{_psi_datadir}
 
 %changelog
+* Tue Jul 31 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-2
+- Add python-setuptools to BuildRequires tag.
+
 * Wed Jun 20 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-1
 - 0.8.1 released.
 - Allow to parse command arguments included spaces.
