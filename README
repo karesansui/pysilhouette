@@ -1,8 +1,7 @@
-(based on commit 66cdb51b1318c4390ccebac5d83791d7cf315f3e)
 Abstract/Features
 ================================================================================
 Pysilhouette is a 100% pure Python daemon which executes background job commands
-queued in database. Comes with an easy web-based administration interface.
+queued in database. It is mainly used for web application to execute background tasks.
 
 Install
 ================================================================================
@@ -12,7 +11,7 @@ See 'INSTALL'.
 License/Copying
 ================================================================================
 
-Copyright (c) 2009-2010 HDE, Inc.
+Copyright (c) 2009-2012 HDE, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
