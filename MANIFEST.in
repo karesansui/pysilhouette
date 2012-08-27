@@ -3,6 +3,7 @@ include LICENSE
 recursive-include doc *
 recursive-include tools *
 recursive-include sample *
+prune sample/openSUSE
 include AUTHORS
 include ChangeLog
 include INSTALL
