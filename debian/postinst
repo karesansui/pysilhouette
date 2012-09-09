@@ -17,24 +17,32 @@
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-__datadir="/var/lib/pysilhouette"
+_pkgname="pysilhouette"
+_pkgroot="/usr/share/pyshared/${_pkgname}/"
+_datadir="/var/lib/${_pkgname}"
+_sqlinit="/usr/share/doc/${_pkgname}/sample/tables/SQLite.dump"
 
 case "$1" in
     configure)
-        if [ ! -e ${__datadir} ]; then
-            mkdir -p ${__datadir} 2> /dev/null
+        if [ ! -e ${_datadir} ]; then
+            mkdir -p ${_datadir} 2> /dev/null
         fi
-        chmod 755 /usr/lib/python2.6/site-packages/pysilhouette/silhouette.py
-	#ln -s /usr/lib/python2.6/site-packages/pysilhouette/silhouette.py /usr/bin/silhouette.py
-    ;;
+        chmod 755 ${_pkgroot}/silhouette.py
+        chmod 755 ${_pkgroot}/performer.py
+        chmod 755 ${_pkgroot}/scheduler.py
+        chown ${_pkgname}:${_pkgname} /var/lib/${_pkgname}/
+        if [ ! -f ${_datadir}/${_pkgname}.db ]; then
+            sqlite3 ${_datadir}/${_pkgname}.db < ${_sqlinit}
+        fi
+        ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
-    ;;
+        ;;
 
     *)
         echo "postinst called with unknown argument \`$1'" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically

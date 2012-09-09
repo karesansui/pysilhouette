@@ -1,0 +1,5 @@
+usr/share/pyshared/pysilhouette/silhouette.py usr/bin/pysilhouette
+etc/pysilhouette/log.conf.example etc/pysilhouette/log.conf
+etc/pysilhouette/whitelist.conf.example etc/pysilhouette/whitelist.conf
+etc/pysilhouette/silhouette.conf.example etc/pysilhouette/silhouette.conf
+
