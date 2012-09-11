@@ -1,9 +1,9 @@
 # pysilhouetted Configuration.
 PREFIX=""
-USER="root"
-GROUP="root"
+USER="pysilhouette"
+GROUP="pysilhouette"
 PYTHON="/usr/bin/python"
 DAEMON_MODE="yes"
+RUN="no"
 DEBUG="no"
 # PYTHON_SEARCH_PATH={BAR}:{FOO}
-PYTHON_SEARCH_PATH="/usr/lib/python:/usr/lib/python2.6:/usr/lib/python2.6/site-packages"

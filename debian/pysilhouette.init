@@ -26,7 +26,7 @@
 # Provides:          pysilhouette
 # Required-Start:    $network $local_fs
 # Required-Stop:
-# Should-Start:      
+# Should-Start:
 # Should-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
@@ -40,23 +40,13 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-DAEMON_NAME="silhouetted"
-NAME="silhouette"              # Introduce the short server's name here
-DAEMON=/usr/bin/$NAME.py # Introduce the server's location here
-DESC="A python-based background job manager"              # Introduce a short description here
-#LOGDIR=/var/log/pysilhouette  # Log directory to use
-
-SCHEDULER_DAEMON_NAME="schedulerd"
-PERFORMER_DAEMON_NAME="performerd"
-
-#PIDFILE=/var/run/$NAME.pid
-PIDFILE="/var/run/${DAEMON_NAME}.pid"
-SCHEDULER_PIDFILE="/var/run/${SCHEDULER_DAEMON_NAME}.pid"
-PERFORMER_PIDFILE="/var/run/${PERFORMER_DAEMON_NAME}.pid"
-SCHEDULER_INIT_D="/etc/init.d/${SCHEDULER_DAEMON_NAME}"
-PERFORMER_INIT_D="/etc/init.d/${PERFORMER_DAEMON_NAME}"
-
-test -e $DAEMON || exit 0
+DAEMON_NAME="pysilhouette"
+NAME="pysilhouette"           # Introduce the short server's name here
+DAEMON=/usr/bin/$NAME         # Introduce the server's location here
+DESC="Background job manager" # Introduce a short description here
+LOGDIR=/var/log/pysilhouette  # Log directory to use
+RUNDIR="/var/run"
+PIDFILE="${RUNDIR}/${DAEMON_NAME}.pid"
 
 . /lib/lsb/init-functions
 
@@ -65,14 +55,15 @@ test -e $DAEMON || exit 0
 CONF="/etc/pysilhouette/silhouette.conf"
 EXTRA_ARGS=""
 
-DAEMON_OPTS="-p ${PIDFILE} -c ${CONF} ${EXTRA_ARGS}"          # Additional options given to the server
+# Additional options given to the server
+DAEMON_OPTS="-p ${PIDFILE} -c ${CONF} ${EXTRA_ARGS}"
 
-DIETIME=10              # Time to wait for the server to die, in seconds
+DIETIME=2               # Time to wait for the server to die, in seconds
                         # If this value is set too low you might not
                         # let some servers to die gracefully and
                         # 'restart' will not work
 
-#STARTTIME=2             # Time to wait for the server to start, in seconds
+STARTTIME=2             # Time to wait for the server to start, in seconds
                         # If this value is set each time the server is
                         # started (on start or restart) the script will
                         # stall to try to determine if it is running
@@ -81,9 +72,9 @@ DIETIME=10              # Time to wait for the server to die, in seconds
                         # be a false positive (says it did not start
                         # when it actually did)
 
-#LOGFILE=$LOGDIR/$NAME.log  # Server logfile
+LOGFILE=$LOGDIR/$NAME.log # Server logfile
 DAEMONUSER=pysilhouette   # Users to run the daemons as. If this value
-                        # is set start-stop-daemon will chuid the server
+                          # is set start-stop-daemon will chuid the server
 
 # For SELinux we need to use 'runuser' not 'su'
 if [ -x /sbin/runuser ]; then
@@ -93,18 +84,18 @@ else
 fi
 
 # Include defaults if available
-#if [ -f /etc/default/$NAME ] ; then
-#    . /etc/default/$NAME
-#fi
+if [ -f /etc/default/$NAME ] ; then
+    . /etc/default/$NAME
+fi
 
 if [ -f /etc/default/${DAEMON_NAME} ] ; then
     . /etc/default/${DAEMON_NAME}
 fi
 
 # ENV PYTHONPATH
-#if [ "x" != "x${PYTHON_SEARCH_PATH}" ]; then
-#    export PYTHONPATH=${PYTHON_SEARCH_PATH}:${PYTHONPATH}
-#fi
+if [ "x" != "x${PYTHON_SEARCH_PATH}" ]; then
+    export PYTHONPATH=${PYTHON_SEARCH_PATH}:${PYTHONPATH}
+fi
 
 # Daemon mode.
 if [ "x${DAEMON_MODE}" = "xyes" ]; then
@@ -118,11 +109,11 @@ fi
 
 # Use this if you want the user to explicitly set 'RUN' in
 # /etc/default/
-#if [ "x$RUN" != "xyes" ] ; then
-#    log_failure_msg "$NAME disabled, please adjust the configuration to your needs "
-#    log_failure_msg "and then set RUN to 'yes' in /etc/default/$NAME to enable it."
-#    exit 1
-#fi
+if [ "x$RUN" != "xyes" ] ; then
+    log_failure_msg "$NAME disabled, please adjust the configuration to your needs "
+    log_failure_msg "and then set RUN to 'yes' in /etc/default/$NAME to enable it."
+    exit 0
+fi
 
 # Check that the user exists (if we set a user)
 # Does the user exist?
@@ -145,10 +136,7 @@ running_pid() {
     name=$2
     [ -z "$pid" ] && return 1
     [ ! -d /proc/$pid ] &&  return 1
-    #cmd=`cat /proc/$pid/cmdline | tr "\000" "\n"|head -n 1 |cut -d : -f 1`
-    #cmd=`cat /proc/$pid/cmdline | tr "\000" "\n"|head -n 2 |tail -1 |cut -d : -f 1`
     cmd=`cat /proc/$pid/cmdline | tr "\000" "\n" |sed -n 2p|cut -d : -f 1`
-    #cmd=`basename $cmd`
     # Is this the expected server
     [ "$cmd" != "$name" ] &&  return 1
     return 0
@@ -165,111 +153,68 @@ running() {
     return 0
 }
 
-#start_server() {
-## Start the process using the wrapper
-#        if [ -z "$DAEMONUSER" ] ; then
-#            start_daemon -p $PIDFILE $DAEMON $DAEMON_OPTS
-#            errcode=$?
-#        else
-## if we are using a daemonuser then change the user id
-#            start-stop-daemon --start --quiet --pidfile $PIDFILE \
-#                        --chuid $DAEMONUSER \
-#                        --exec $DAEMON -- $DAEMON_OPTS
-#            errcode=$?
-#        fi
-#        return $errcode
-#}
-
 start_server() {
     if [ -e $PIDFILE ]; then
-            echo "already running..."
+            log_progress_msg "already running..."
             return 1
     fi
-    touch $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
+    touch $PIDFILE
     chown $DAEMONUSER:${DAEMONUSER} $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
-    if [ "x$PYTHON_SEARCH_PATH" != "x" ]; then
-        ENV="PYTHONPATH=$PYTHON_SEARCH_PATH:\$PYTHONPATH"
-    fi
-    eval "export $ENV"
     $PYTHON ${PREFIX}${DAEMON} $DAEMON_OPTS
 
     RETVAL=$?
-    if [ $RETVAL -eq 0 ]; then
-        echo "[OK]"
-    else
-        echo "[NG]"
-        stop
+    if [ ${RETVAL} -ne 0 ]; then
+        stop_server
     fi
-    echo ""
     return ${RETVAL}
 }
 
-#stop_server() {
-## Stop the process using the wrapper
-#        if [ -z "$DAEMONUSER" ] ; then
-#            killproc -p $PIDFILE $DAEMON
-#            errcode=$?
-#        else
-## if we are using a daemonuser then look for process that match
-#            start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-#                        --user $DAEMONUSER \
-#                        --exec $DAEMON
-#            errcode=$?
-#        fi
-#
-#        return $errcode
-#}
+stop_child() {
+    if [ -z "$1" ]; then
+        return 0;
+    fi
+    if [ -f "$RUNDIR/$1.pid" ]; then
+        PID=$(cat "$RUNDIR/$1.pid")
+        kill -15 "$PID" > /dev/null 2>&1
+        sleep 1
+        kill -9  "$PID" > /dev/null 2>&1
+        rm -f "$RUNDIR/$1.pid"
+    fi
+}
+
+
+stop_childs() {
+    stop_child schedulerd
+    stop_child asynschedulerd
+    stop_child performerd
+    stop_child asynperformerd
+}
 
 silhouetted_stop() {
-    echo -n "Shutting down $DESC: "
     if [ ! -e $PIDFILE ]; then
-        echo "not running..."
+        log_progress_msg "not running..."
         return 1
     fi
     PID=`cat $PIDFILE`
-    if [ "$PID" == "" ]; then
-        echo "not running... - not pid"
+    if [ -z "$PID" ]; then
+        log_progress_msg "not running... - not pid"
         rm -f $PIDFILE
         return 1
     fi
-    #killproc -p $PIDFILE -15
     killproc -p $PIDFILE $DAEMON
     RETVAL=$?
     return $RETVAL
 }
 
 stop_server() {
-    #touch $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
     silhouetted_stop
-    SIL_RETVAL=$?
-    if [ ${SIL_RETVAL} -eq 0 ]; then
+    RETVAL=$?
+    if [ ${RETVAL} -eq 0 ]; then
         rm -f ${PIDFILE}
     fi
-    eval "$SCHEDULER_INIT_D stop"
-    SCH_RETVAL=$?
-    if [ ${SCH_RETVAL} -eq 0 ]; then
-        rm -f $SCHEDULER_PIDFILE
-    fi
-    eval "$PERFORMER_INIT_D stop"
-    PER_RETVAL=$?
-    if [ $PER_RETVAL -eq 0 ]; then
-        rm -f $PERFORMER_PIDFILE
-    fi
-    # The return code of the performer daemon is the first digit. 
-    # The return code of the scheduler daemon is the second digit. 
-    # The return code of the silhouetted daemon is the third digit. 
-    # All stop functions return only the exit code of 0(Normal) or 1(Abnormal).
-    RETVAL=`expr $SIL_RETVAL \* 100 + $SCH_RETVAL \* 10 + $PER_RETVAL`
+    stop_childs
     return $RETVAL
 }
-
-#reload_server() {
-#    [ ! -f "$PIDFILE" ] && return 1
-#    pid=pidofproc $PIDFILE # This is the daemon's pid
-#    # Send a SIGHUP
-#    kill -1 $pid
-#    return $?
-#}
 
 force_stop() {
 # Force the process to die killing it manually
@@ -282,7 +227,7 @@ force_stop() {
             kill -9 $pid
             sleep "$DIETIME"s
             if running ; then
-                echo "Cannot kill $NAME (pid=$pid)!"
+                log_progress_msg "Cannot kill $NAME (pid=$pid)!"
                 exit 1
             fi
         fi
@@ -299,7 +244,7 @@ force_stop() {
 
 case "$1" in
   start)
-        log_daemon_msg "Starting $DESC " "$NAME"
+        log_daemon_msg "Starting $DESC" "$NAME"
         # Check if it's running first
         if running ;  then
             log_progress_msg "apparently already running"
@@ -346,8 +291,6 @@ case "$1" in
             errcode=0
             force_stop || errcode=$?
             log_end_msg $errcode
-#        else
-#            [ -f "$PIDFILE" ] && rm -f $PIDFILE
         fi
         ;;
   restart|force-reload)
@@ -378,35 +321,8 @@ case "$1" in
         log_warning_msg "Reloading $NAME daemon: not implemented, as the daemon"
         log_warning_msg "cannot re-read the config file (use restart)."
         ;;
-  # And this if it cann
-  #reload)
-          #
-          # If the daemon can reload its config files on the fly
-          # for example by sending it SIGHUP, do it here.
-          #
-          # If the daemon responds to changes in its config file
-          # directly anyway, make this a do-nothing entry.
-          #
-          # log_daemon_msg "Reloading $DESC configuration files" "$NAME"
-          # if running ; then
-          #    reload_server
-          #    if ! running ;  then
-          # Process died after we tried to reload
-          #       log_progress_msg "died on reload"
-          #       log_end_msg 1
-          #       exit 1
-          #    fi
-          # else
-          #    log_progress_msg "server is not running"
-          #    log_end_msg 1
-          #    exit 1
-          # fi
-                                                                                    #;;
-
   *)
-        #N=/etc/init.d/$NAME
-        N=/etc/init.d/${DAEMON_NAME}
-        echo "Usage: $N {start|stop|force-stop|restart|force-reload|status}" >&2
+        echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status}" >&2
         exit 1
         ;;
 esac

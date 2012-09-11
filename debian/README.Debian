@@ -6,6 +6,4 @@ pysilhouette for Debian
     $ cat changelog 
     $ debuild -uc -us --lintian-opts --info
 
-<possible notes regarding this package - if none, delete this file>
-
  -- Kei Funagayama <kei@karesansui-project.info>  Tue, 07 Jul 2009 11:57:49 +0900
