@@ -43,10 +43,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON_NAME="pysilhouette"
 NAME="pysilhouette"           # Introduce the short server's name here
 DAEMON=/usr/bin/$NAME         # Introduce the server's location here
-DESC="A python-based background job manager" # Introduce a short description here
+DESC="Background job manager" # Introduce a short description here
 LOGDIR=/var/log/pysilhouette  # Log directory to use
-
-PIDFILE="/var/run/${DAEMON_NAME}.pid"
+RUNDIR="/var/run"
+PIDFILE="${RUNDIR}/${DAEMON_NAME}.pid"
 
 . /lib/lsb/init-functions
 
@@ -155,49 +155,64 @@ running() {
 
 start_server() {
     if [ -e $PIDFILE ]; then
-            echo "already running..."
+            log_progress_msg "already running..."
             return 1
     fi
-    touch $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
+    touch $PIDFILE
     chown $DAEMONUSER:${DAEMONUSER} $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
     $PYTHON ${PREFIX}${DAEMON} $DAEMON_OPTS
 
     RETVAL=$?
-    if [ $RETVAL -eq 0 ]; then
-        echo "[OK]"
-    else
-        echo "[NG]"
+    if [ ${RETVAL} -ne 0 ]; then
         stop_server
     fi
-    echo ""
     return ${RETVAL}
 }
 
+stop_child() {
+    if [ -z "$1" ]; then
+        return 0;
+    fi
+    if [ -f "$RUNDIR/$1.pid" ]; then
+        PID=$(cat "$RUNDIR/$1.pid")
+        kill -15 "$PID" > /dev/null 2>&1
+        sleep 1
+        kill -9  "$PID" > /dev/null 2>&1
+        rm -f "$RUNDIR/$1.pid"
+    fi
+}
+
+
+stop_childs() {
+    stop_child schedulerd
+    stop_child asynschedulerd
+    stop_child performerd
+    stop_child asynperformerd
+}
+
 silhouetted_stop() {
-    echo -n "Shutting down $DESC: "
     if [ ! -e $PIDFILE ]; then
-        echo "not running..."
+        log_progress_msg "not running..."
         return 1
     fi
     PID=`cat $PIDFILE`
     if [ -z "$PID" ]; then
-        echo "not running... - not pid"
+        log_progress_msg "not running... - not pid"
         rm -f $PIDFILE
         return 1
     fi
-    #killproc -p $PIDFILE -15
     killproc -p $PIDFILE $DAEMON
     RETVAL=$?
     return $RETVAL
 }
 
 stop_server() {
-    #touch $PIDFILE $SCHEDULER_PIDFILE $PERFORMER_PIDFILE
     silhouetted_stop
     RETVAL=$?
     if [ ${RETVAL} -eq 0 ]; then
         rm -f ${PIDFILE}
     fi
+    stop_childs
     return $RETVAL
 }
 
@@ -212,7 +227,7 @@ force_stop() {
             kill -9 $pid
             sleep "$DIETIME"s
             if running ; then
-                echo "Cannot kill $NAME (pid=$pid)!"
+                log_progress_msg "Cannot kill $NAME (pid=$pid)!"
                 exit 1
             fi
         fi
@@ -229,7 +244,7 @@ force_stop() {
 
 case "$1" in
   start)
-        log_daemon_msg "Starting $DESC " "$NAME"
+        log_daemon_msg "Starting $DESC" "$NAME"
         # Check if it's running first
         if running ;  then
             log_progress_msg "apparently already running"
