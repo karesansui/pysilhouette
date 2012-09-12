@@ -42,12 +42,11 @@ DAEMON_NAME="performerd"
 #DAEMON=/usr/sbin/pysilhouette # Introduce the server's location here
 DAEMON="performer.py" # Introduce the server's location here
 NAME="performer"              # Introduce the short server's name here
-DESC="The stop script of the child process(performer.py) of the Pysilhouette system."
+DESC="Pysilhouette Performer"
 #LOGDIR=/var/log/pysilhouette  # Log directory to use
 
 STOP_CODE="2"
-FIFO="/tmp/pysilhouette.fifo"
-
+FIFO="/tmp/pysilhouette-performer.fifo"
 
 #PIDFILE=/var/run/$NAME.pid
 PIDFILE=/var/run/${DAEMON_NAME}.pid
@@ -173,8 +172,8 @@ stop_server() {
         return 1
     fi
     pid=`cat $PIDFILE`
-    #if [ "${pid}" == "" ]; then
-    if [ "x${pid}" == "x" ]; then
+    #if [ "${pid}" = "" ]; then
+    if [ "x${pid}" = "x" ]; then
         echo "not running... - not pid"
         rm -f ${pidfile}
         return 1
