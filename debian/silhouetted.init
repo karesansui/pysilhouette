@@ -43,7 +43,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON_NAME="silhouetted"
 NAME="silhouette"              # Introduce the short server's name here
 DAEMON=/usr/bin/$NAME.py # Introduce the server's location here
-DESC="A python-based background job manager"              # Introduce a short description here
+DESC="A python-based background job manager"  # Introduce a short description here
 #LOGDIR=/var/log/pysilhouette  # Log directory to use
 
 SCHEDULER_DAEMON_NAME="schedulerd"
@@ -227,7 +227,7 @@ silhouetted_stop() {
         return 1
     fi
     PID=`cat $PIDFILE`
-    if [ "$PID" == "" ]; then
+    if [ "$PID" = "" ]; then
         echo "not running... - not pid"
         rm -f $PIDFILE
         return 1

@@ -42,7 +42,7 @@ DAEMON_NAME="schedulerd"
 #DAEMON=/usr/sbin/pysilhouette # Introduce the server's location here
 DAEMON="scheduler.py" # Introduce the server's location here
 NAME="scheduler"              # Introduce the short server's name here
-DESC="The stop script of the child process(scheduler.py) of the Pysilhouette system."
+DESC="Pysilhouette Scheduler"
 #LOGDIR=/var/log/pysilhouette  # Log directory to use
 
 #PIDFILE=/var/run/$NAME.pid
