@@ -13,56 +13,24 @@
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-_user=pysilhouette
-_group=pysilhouette
-_uid_min=300
-_uid_max=350
+export UID_MIN=300
+export UID_MAX=350
+
+_pkgname="pysilhouette"
+_user="pysilhouette"
 
 case "$1" in
-    install|upgrade)
-        if [ "$1" = "install" ]; then
-            # Add group
-            getent group | grep "^${_group}:" >/dev/null 2>&1
-            if [ $? -ne 0 ]; then
-                __uid=${_uid_min}
-                while test ${__uid} -le ${_uid_max}
-                do
-                    getent group | grep "^[^:]*:x:${__uid}:" >/dev/null 2>&1
-                    if [ $? -ne 0 ]; then
-                        _gid=${__uid}
-                        break
-                    fi
-                    __uid=`expr ${__uid} + 1`
-                done
-                /usr/sbin/groupadd -g ${_gid} -f ${_group}
-            fi
-            
-            # Add user
-            getent passwd | grep "^${_user}:" >/dev/null 2>&1
-            if [ $? -ne 0 ]; then
-                __uid=${_uid_min}
-                while test ${__uid} -le ${_uid_max}
-                do
-                    getent passwd | grep "^[^:]*:x:${__uid}:" >/dev/null 2>&1
-                    if [ $? -ne 0 ]; then
-                        _uid=${__uid}
-                        break
-                    fi
-                    __uid=`expr ${__uid} + 1`
-                done
+    install)
+        useradd -r -m -d /var/lib/${_pkgname} -s /bin/false ${_user}
+        ;;
 
-                /usr/sbin/useradd -c "pysilhouette" -u ${_uid} -g ${_group} -s /bin/false -r ${_user} 2> /dev/null || :
-            fi
-        fi
-    ;;
-
-    abort-upgrade)
-    ;;
+    upgrade|abort-upgrade)
+        ;;
 
     *)
         echo "preinst called with unknown argument \`$1'" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically
