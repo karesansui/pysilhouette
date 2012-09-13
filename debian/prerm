@@ -18,17 +18,13 @@ set -e
 
 
 case "$1" in
-    remove|upgrade|deconfigure)
-        #rm -f /usr/bin/silhouette.py
-    ;;
-
-    failed-upgrade)
-    ;;
+    remove|upgrade|deconfigure|failed-upgrade)
+        ;;
 
     *)
         echo "prerm called with unknown argument \`$1'" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically

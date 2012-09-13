@@ -1,0 +1,17 @@
+--- a/sample/silhouette.conf.example	2012-09-09 17:36:35.713577229 +1100
++++ b/sample/silhouette.conf.example	2012-09-09 17:37:49.685578852 +1100
+@@ -16,10 +16,10 @@
+ ##
+ # observer
+ observer.target.python=/usr/bin/python
+-observer.target.scheduler=/usr/lib/python2.6/site-packages/pysilhouette/scheduler.py
+-observer.target.performer=/usr/lib/python2.6/site-packages/pysilhouette/performer.py
+-observer.target.asynscheduler=/usr/lib/python2.6/site-packages/pysilhouette/asynscheduler.py
+-observer.target.asynperformer=/usr/lib/python2.6/site-packages/pysilhouette/asynperformer.py
++observer.target.scheduler=/usr/share/pyshared/pysilhouette/scheduler.py
++observer.target.performer=/usr/share/pyshared/pysilhouette/performer.py
++observer.target.asynscheduler=/usr/share/pyshared/pysilhouette/asynscheduler.py
++observer.target.asynperformer=/usr/share/pyshared/pysilhouette/asynperformer.py
+ observer.restart.count=5
+ #  - Clear intervals. 0=Infinite
+ observer.restart.count.clear.time=600
