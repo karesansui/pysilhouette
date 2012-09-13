@@ -18,19 +18,31 @@
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+_pkgname="pysilhouette"
 _user="pysilhouette"
 _group="pysilhouette"
 
 case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-        /usr/sbin/userdel %{_user} 2> /dev/null || :
-        /usr/sbin/groupdel %{_group} 2> /dev/null || :
-    ;;
+    remove)
+        userdel  ${_user}
+        groupdel ${_group}
+        ;;
+
+    purge)
+        rm -rf /etc/${_pkgname}
+        rm -rf /etc/default/${_pkgname}
+        rm -rf /etc/init.d/${_pkgname}
+        rm -rf /var/log/${_pkgname}
+        rm -rf /var/lib/${_pkgname}
+        ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        ;;
 
     *)
         echo "postrm called with unknown argument \`$1'" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically
