@@ -1,8 +1,8 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %define name    pysilhouette
-%define version 0.8.1
-%define release 2
+%define version 0.8.2
+%define release 1
 
 %define __python        $(which python)
 %define __chkconfig     /sbin/chkconfig
@@ -151,6 +151,9 @@ fi
 %dir %{_psi_datadir}
 
 %changelog
+* Thu Sep 13 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.2-1
+- 0.8.2 released.
+
 * Tue Jul 31 2012 Taizo ITO <taizo@karesansui-project.info> - 0.8.1-2
 - Add python-setuptools to BuildRequires tag.
 
