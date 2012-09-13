@@ -29,7 +29,7 @@
 """
 
 __version__ = '0.8'
-__release__ = '1'
+__release__ = '2'
 __app__ = 'pysilhouette'
 
 # DEFINE

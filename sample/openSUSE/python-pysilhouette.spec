@@ -22,13 +22,13 @@
 %define ap_docroot /srv/www/htdocs
 
 Name:           python-pysilhouette
-Version:        0.8.1
+Version:        0.8.2
 Release:        0
 License:        MIT
 Summary:        A 100% pure Python daemon
 Url:            https://github.com/karesansui/pysilhouette
 Group:          Development/Languages/Python
-Source0:        %{pyname}-0.8.1.tar.gz
+Source0:        %{pyname}-0.8.2.tar.gz
 Source1:        %{pyname}.sysconfig
 Source2:        %{pyname}.init
 Patch0:         %{pyname}-conf.patch
