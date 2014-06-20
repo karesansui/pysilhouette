@@ -65,7 +65,11 @@ def dict2command(cmd, options={}):
         if options[x] is None:
             ret += "--%s " % x 
         else:
-            ret += "--%s=%s " % (x, options[x])
+            try:
+                options[x].index(' ')
+                ret += "--%s=\"%s\" " % (x, options[x])
+            except:
+                ret += "--%s=%s " % (x, options[x])
     return "%s %s" % (cmd.strip(), ret.strip())
 
 # public
