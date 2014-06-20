@@ -37,7 +37,6 @@ Packages Pysilhouette depends on
 
 Python
 SQLAlchemy
-webpy
 
 
 Directory Structure
@@ -126,6 +125,6 @@ Directory Structure
 
 Acknowledgment
 ================================================================================
-SQLAlchemy and webpy people.
+SQLAlchemy people.
 HDE, Inc. and other related members.
 All people in Python community.
