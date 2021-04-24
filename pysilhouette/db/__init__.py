@@ -121,7 +121,7 @@ def dbsave(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to insert is failed, '
                           'Invalid value was inputed. '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))
@@ -154,7 +154,7 @@ def dbupdate(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to update is failed, '
                           'Invalid value was inputed '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))
@@ -187,7 +187,7 @@ def dbdelete(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to delete is failed, '
                           'Invalid value was inputed '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))

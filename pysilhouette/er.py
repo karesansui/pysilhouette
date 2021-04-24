@@ -58,7 +58,7 @@ class ER:
                             self.cf["%s.mkfifo.group.name" % prefix],
                             self.cf["%s.mkfifo.perms" % prefix],
                             )
-            except OSError, oe:
+            except OSError as oe:
                 self.logger.error('Failed to create a fifo file.')
                 raise oe
 

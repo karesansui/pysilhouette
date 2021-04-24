@@ -68,7 +68,7 @@ class Worker:
             err = False
             try:
                 ret = self._action(session, _m_jobs)
-            except Exception, e:
+            except Exception as e:
                 t_logger = logging.getLogger('pysilhouette_traceback')
                 t_logger.info(traceback.format_exc())
                 self.logger.info('%s, Failed to perform the job action. Exceptions are not expected. - jobgroup_id=%d : %s, JobGroup status=%s'
@@ -87,7 +87,7 @@ class Worker:
                         jobgroup_update(session, self._m_jg, JOBGROUP_STATUS['NG']) # JobGroup UPDATE
                         try:
                             self._rollback(session, _m_jobs)
-                        except Exception, e:
+                        except Exception as e:
                             self.logger.info('Failed to perform a rollback. Exceptions are not expected. - jobgroup_id=%d : %s'
                                          % (self._jobgroup_id, str(e.args)))
                             t_logger = logging.getLogger('pysilhouette_traceback')
@@ -97,7 +97,7 @@ class Worker:
                 # finish
                 try:
                     self._finish()
-                except Exception, e:
+                except Exception as e:
                     self.logger.info('Failed to perform the finish action. Exceptions are not expected. - jobgroup_id=%d : %s'
                                  % (self._jobgroup_id, str(e.args)))
                     t_logger = logging.getLogger('pysilhouette_traceback')
@@ -137,7 +137,7 @@ class Worker:
                         self.logger.debug('Of commands executed stdout=%s' % proc_info['stdout'])
                         self.logger.debug('Of commands executed stderr=%s' % proc_info['stderr'])
                         
-                    except OSError, oe:
+                    except OSError as oe:
                         self.logger.info('finish command system failed!! jobgroup_id=%d : cmd=%s'
                                           % (self._m_jg.id, cmd))
                         raise oe
@@ -225,7 +225,7 @@ class SimpleWorker(Worker):
                                              % (self._cf['job.popen.output.limit'], len(proc_info['stderr'])))
                             
 
-                    except OSError, oe:
+                    except OSError as oe:
                         self.logger.info('action command system failed!! job_id=%d : cmd=%s'
                                           % (m_job.id, cmd))
                         raise oe
@@ -284,7 +284,7 @@ class SimpleWorker(Worker):
                             self.logger.debug('Of commands executed stdout=%s' % proc_info['stdout'])
                             self.logger.debug('Of commands executed stderr=%s' % proc_info['stderr'])
 
-                        except OSError, oe:
+                        except OSError as oe:
                             self.logger.info('rollback command system failed!! job_id=%d : cmd=%s'
                                           % (m_job.id, cmd))
                             raise oe
@@ -365,7 +365,7 @@ class ThreadWorker(threading.Thread, SimpleWorker):
         self.logger = logging.getLogger('pysilhouette.worker.threadworker')
         try:
             self.process()
-        except Exception, e:
+        except Exception as e:
             self.logger.error('%s - JobGroup execute failed. - jobgroup_id=%d : %s, JobGroup status=%s' \
                               % (self.getName(), self._jobgroup_id, str(e.args), JOBGROUP_STATUS['APPERR']))
             t_logger = logging.getLogger('pysilhouette_traceback')
@@ -388,18 +388,18 @@ def dummy_set_job(cf, number, action, rollback, finish, type, db=None):
             reload_mappers(db.get_metadata())
 
         session = db.get_session()
-    except Exception, e:
-        print >>sys.stderr, 'Initializing a database error'
+    except Exception as e:
+        print('Initializing a database error', file=sys.stderr)
         raise
 
     try:
         jgs = []
         for i in range(number):
-            jg_name = u'%s-%d' % ('worker#dummy_set_job#jobgroup', i)
-            jg_ukey = unicode(cf['env.uniqkey'], "utf-8")
+            jg_name = '%s-%d' % ('worker#dummy_set_job#jobgroup', i)
+            jg_ukey = str(cf['env.uniqkey'], "utf-8")
             jg = JobGroup(jg_name, jg_ukey)
             if not finish is None:
-                jg.finish_command = unicode(finish, "utf-8")
+                jg.finish_command = str(finish, "utf-8")
             if type == 'serial':
                 jg.type = JOBGROUP_TYPE['SERIAL']
             elif type == 'parallel':
@@ -407,11 +407,11 @@ def dummy_set_job(cf, number, action, rollback, finish, type, db=None):
             else:
                 jg.type = JOBGROUP_TYPE['SERIAL']
 
-            j_name = u'%s-%d' % ('worker#dummy_set_job#job', i)
+            j_name = '%s-%d' % ('worker#dummy_set_job#job', i)
             j_order = i
-            j = Job(j_name, j_order, unicode(action, "utf-8"))
+            j = Job(j_name, j_order, str(action, "utf-8"))
             if not rollback is None:
-                j.rollback_command = unicode(rollback, "utf-8")
+                j.rollback_command = str(rollback, "utf-8")
 
             jg.jobs.append(j)
             jgs.append(jg)
@@ -419,16 +419,16 @@ def dummy_set_job(cf, number, action, rollback, finish, type, db=None):
         session.add_all(jgs)
         session.commit()
         session.close()
-        print >>sys.stdout, 'Insert JobGroup and Job. num=%d [OK]' % number
-    except Exception, e:
-        print >>sys.stderr, 'Failed to add JobGroup and Job.'
+        print('Insert JobGroup and Job. num=%d [OK]' % number, file=sys.stdout)
+    except Exception as e:
+        print('Failed to add JobGroup and Job.', file=sys.stderr)
         raise
             
 
 
 if __name__ == '__main__':
-    import Queue
-    request_queue = Queue.Queue()
+    import queue
+    request_queue = queue.Queue()
     #response_queue = Queue.Queue()
     response_list = []
     tq = ThreadQueue(request_queue, response_list)
@@ -447,8 +447,8 @@ if __name__ == '__main__':
         db = Database(pysilhouette.cf['database.url'],encoding="utf-8",convert_unicode=True,echo=True,echo_pool=True)
         reload_mappers(db.get_metadata())
         session = db.get_session()
-    except Exception, e:
-        print >>sys.stderr, 'Initializing a database error'
+    except Exception as e:
+        print('Initializing a database error', file=sys.stderr)
         raise
 
     from pysilhouette.db.access import jobgroup_findbytype_status
@@ -456,18 +456,18 @@ if __name__ == '__main__':
     for m_jg in m_jgs:
         try:
             tq.put(ThreadWorker(pysilhouette.cf, db, m_jg.id))
-        except Exception, e:
+        except Exception as e:
             import traceback
-            print traceback.format_exc()
+            print(traceback.format_exc())
 
     import time
     time.sleep(2)
 
     while True:
         size = tq.response_clean()
-        print 'ret=' + str(size)
+        print('ret=' + str(size))
         if size <= 0:
             break
         time.sleep(2)
 
-    print 'end (request_queue size=%d, response_list=%s)' % (tq.request_queue.qsize(), tq.response_list)
+    print('end (request_queue size=%d, response_list=%s)' % (tq.request_queue.qsize(), tq.response_list))

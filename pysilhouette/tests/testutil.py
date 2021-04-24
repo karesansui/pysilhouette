@@ -122,7 +122,7 @@ class TestUtil(unittest.TestCase):
         ret = target.write_pidfile(self.pname, 20)
         fp = open(self.pname, 'r')
         ret = fp.read()
-        self.assertEquals('20', ret)
+        self.assertEqual('20', ret)
         self.unlink(self.pname)
 
     def test_read_pidfile_0(self):
@@ -130,7 +130,7 @@ class TestUtil(unittest.TestCase):
         target.write_pidfile(self.pname, 30)
 
         ret = target.read_pidfile(self.pname)
-        self.assertEquals('30', ret)
+        self.assertEqual('30', ret)
         self.unlink(self.pname)
 
 class SuiteIsSplitShellCommand(unittest.TestSuite):
@@ -138,41 +138,41 @@ class SuiteIsSplitShellCommand(unittest.TestSuite):
         tests = ['test_split_shell_command_0',
                  'test_split_shell_command_1',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 class SuiteIsEmpty(unittest.TestSuite):
     def __init__(self):
         tests = ['test_is_empty_0',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 class SuiteCreateFifo(unittest.TestSuite):
     def __init__(self):
         tests = ['test_create_fifo_0',
                  'test_create_fifo_1',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 class SuitePopen(unittest.TestSuite):
     def __init__(self):
         tests = ['test_popen_0',
                  'test_popen_1',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 class SuiteWritePidfile(unittest.TestSuite):
     def __init__(self):
         tests = ['test_write_pidfile_0',
                  'test_write_pidfile_1',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 class SuiteReadPidfile(unittest.TestSuite):
     def __init__(self):
         tests = ['test_read_pidfile_0',
                  'test_read_pidfile_1',
                  ]
-        unittest.TestSuite.__init__(self,map(TestUtil, tests))
+        unittest.TestSuite.__init__(self,list(map(TestUtil, tests)))
 
 def all_suite_util():
     return unittest.TestSuite([SuiteIsSplitShellCommand(),

@@ -36,9 +36,9 @@ import grp
 from optparse import OptionParser
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 from pysilhouette import __version__
 
@@ -55,22 +55,22 @@ def getopts():
 
 def chkopts(opts):
     if not opts.config:
-        print >>sys.stderr, '-c or --config option is required.'
+        print('-c or --config option is required.', file=sys.stderr)
         return True
 
     if os.path.isfile(opts.config) is False:
-        print >>sys.stderr, '-c or --config file is specified in the option does not exist.'
+        print('-c or --config file is specified in the option does not exist.', file=sys.stderr)
         return True
 
     if opts.uniqkey:
         return False
 
     if opts.daemon is True and not opts.pidfile:
-        print >>sys.stderr, '-p or --pidfile option is required.'
+        print('-p or --pidfile option is required.', file=sys.stderr)
         return True
 
     if not opts.daemon and opts.pidfile:
-        print >>sys.stderr, '-p doesn work without -d. Please add the option to -d or --daemon.'
+        print('-p doesn work without -d. Please add the option to -d or --daemon.', file=sys.stderr)
         return True
 
     return False
@@ -161,99 +161,99 @@ def parse_conf(cf):
         err_key = "database.pool.status"
 
     if is_uuid(cf["env.uniqkey"]) is False:
-        print >>sys.stderr, 'UUID format is not set. - env.uniqkey'
+        print('UUID format is not set. - env.uniqkey', file=sys.stderr)
         return False
 
     if 0 < len(err_key):
-        print >>sys.stderr, 'Configuration files are missing. - %s' % (err_key)
+        print('Configuration files are missing. - %s' % (err_key), file=sys.stderr)
         return False
 
     if os.access(cf["env.python"], os.R_OK | os.X_OK) is False:
-        print >>sys.stderr, 'Incorrect file permissions. - env.python=%s' % (cf["env.python"])
+        print('Incorrect file permissions. - env.python=%s' % (cf["env.python"]), file=sys.stderr)
         return False
 
     if os.access(cf["observer.target.python"], os.R_OK | os.X_OK) is False:
-        print >>sys.stderr, 'Incorrect file permissions. - observer.target.python=%s' % (cf["observer.target.python"])
+        print('Incorrect file permissions. - observer.target.python=%s' % (cf["observer.target.python"]), file=sys.stderr)
         return False
 
     if os.access(cf["observer.target.scheduler"], os.R_OK) is False:
-        print >>sys.stderr, 'Incorrect file permissions. - observer.target.scheduler=%s' % (cf["observer.target.scheduler"])
+        print('Incorrect file permissions. - observer.target.scheduler=%s' % (cf["observer.target.scheduler"]), file=sys.stderr)
         return False
 
     if os.access(cf["observer.target.performer"], os.R_OK) is False:
-        print >>sys.stderr, 'Incorrect file permissions. - observer.target.performer=%s' % (cf["observer.target.performer"])
+        print('Incorrect file permissions. - observer.target.performer=%s' % (cf["observer.target.performer"]), file=sys.stderr)
         return False
 
     if is_int(cf["observer.restart.count"]) is False:
-        print >>sys.stderr, 'Must be a number. - observer.restart.count=%s' % (cf["observer.restart.count"])
+        print('Must be a number. - observer.restart.count=%s' % (cf["observer.restart.count"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "observer.restart.count")
 
     if is_int(cf["observer.restart.count.clear.time"]) is False:
-        print >>sys.stderr, 'Must be a number. - observer.restart.count.clear.time=%s' % (cf["observer.restart.count.clear.time"])
+        print('Must be a number. - observer.restart.count.clear.time=%s' % (cf["observer.restart.count.clear.time"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "observer.restart.count.clear.time")
 
     if is_int(cf["observer.check.interval"]) is False:
-        print >>sys.stderr, 'Must be a number. - observer.check.interval=%s' % (cf["observer.check.interval"])
+        print('Must be a number. - observer.check.interval=%s' % (cf["observer.check.interval"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "observer.check.interval")
 
     # performer
     if is_int(cf["performer.mkfifo.start.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - performer.mkfifo.start.code=%s' % (cf["performer.mkfifo.start.code"])
+        print('Must be a number. - performer.mkfifo.start.code=%s' % (cf["performer.mkfifo.start.code"]), file=sys.stderr)
         return False
 
     if is_int(cf["performer.mkfifo.ignore.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - performer.mkfifo.ignore.code=%s' % (cf["performer.mkfifo.ignore.code"])
+        print('Must be a number. - performer.mkfifo.ignore.code=%s' % (cf["performer.mkfifo.ignore.code"]), file=sys.stderr)
         return False
 
     if is_int(cf["performer.mkfifo.stop.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - performer.mkfifo.stop.code=%s' % (cf["performer.mkfifo.stop.code"])
+        print('Must be a number. - performer.mkfifo.stop.code=%s' % (cf["performer.mkfifo.stop.code"]), file=sys.stderr)
         return False
 
     # asynperformer
     if is_int(cf["asynperformer.mkfifo.start.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - asynperformer.mkfifo.start.code=%s' % (cf["asynperformer.mkfifo.start.code"])
+        print('Must be a number. - asynperformer.mkfifo.start.code=%s' % (cf["asynperformer.mkfifo.start.code"]), file=sys.stderr)
         return False
 
     if is_int(cf["asynperformer.mkfifo.ignore.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - asynperformer.mkfifo.ignore.code=%s' % (cf["asynperformer.mkfifo.ignore.code"])
+        print('Must be a number. - asynperformer.mkfifo.ignore.code=%s' % (cf["asynperformer.mkfifo.ignore.code"]), file=sys.stderr)
         return False
 
     if is_int(cf["asynperformer.mkfifo.stop.code"]) is False:
-        print >>sys.stderr, 'Must be a number. - asynperformer.mkfifo.stop.code=%s' % (cf["asynperformer.mkfifo.stop.code"])
+        print('Must be a number. - asynperformer.mkfifo.stop.code=%s' % (cf["asynperformer.mkfifo.stop.code"]), file=sys.stderr)
         return False
 
     if is_int(cf["asynscheduler.interval"]) is False:
-        print >>sys.stderr, 'Must be a number. - asynscheduler.interval=%s' % (cf["asynscheduler.interval"])
+        print('Must be a number. - asynscheduler.interval=%s' % (cf["asynscheduler.interval"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "asynscheduler.interval")
 
     if is_int(cf["scheduler.interval"]) is False:
-        print >>sys.stderr, 'Must be a number. - scheduler.interval=%s' % (cf["scheduler.interval"])
+        print('Must be a number. - scheduler.interval=%s' % (cf["scheduler.interval"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "scheduler.interval")
 
     if is_int(cf["job.popen.timeout"]) is False:
-        print >>sys.stderr, 'Must be a number. - job.popen.timeout=%s' % (cf["job.popen.timeout"])
+        print('Must be a number. - job.popen.timeout=%s' % (cf["job.popen.timeout"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "job.popen.timeout")
 
     if is_int(cf["job.popen.waittime"]) is False:
-        print >>sys.stderr, 'Must be a number. - job.popen.waittime=%s' % (cf["job.popen.waittime"])
+        print('Must be a number. - job.popen.waittime=%s' % (cf["job.popen.waittime"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "job.popen.waittime")
 
     if is_int(cf["job.popen.output.limit"]) is False:
-        print >>sys.stderr, 'Must be a number. - job.popen.output.limit=%s' % (cf["job.popen.output.limit"])
+        print('Must be a number. - job.popen.output.limit=%s' % (cf["job.popen.output.limit"]), file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "job.popen.output.limit")
@@ -264,27 +264,27 @@ def parse_conf(cf):
                     cf["performer.mkfifo.stop.code"]],
                    )
     if len(p_mkfifo) != 3:
-        print >>sys.stderr, 'Is not unique. - performer.mkfifo.[start,ignore,stop]=%s,%s,%s' \
+        print('Is not unique. - performer.mkfifo.[start,ignore,stop]=%s,%s,%s' \
               % (cf["performer.mkfifo.start.code"],
                  cf["performer.mkfifo.ignore.code"],
                  cf["performer.mkfifo.stop.code"],
-                 )
+                 ), file=sys.stderr)
         return False
 
     try:
         pwd.getpwnam(cf["performer.mkfifo.user.name"])
     except:
-        print >>sys.stderr, 'Can not get information of the user (nonexistent?). - performer.mkfifo.user.name=%s' % (cf["performer.mkfifo.user.name"])
+        print('Can not get information of the user (nonexistent?). - performer.mkfifo.user.name=%s' % (cf["performer.mkfifo.user.name"]), file=sys.stderr)
 
     try:
         grp.getgrnam(cf["performer.mkfifo.group.name"])
     except:
-        print >>sys.stderr, 'Can not get information of the group (nonexistent?). - performer.mkfifo.group.name=%s' % (cf["performer.mkfifo.group.name"])
+        print('Can not get information of the group (nonexistent?). - performer.mkfifo.group.name=%s' % (cf["performer.mkfifo.group.name"]), file=sys.stderr)
 
     try:
         int(cf["performer.mkfifo.perms"], 8)
     except:
-        print >>sys.stderr, 'Incorrect file permissions. - performer.mkfifo.perms=%s' % (cf["performer.mkfifo.perms"])
+        print('Incorrect file permissions. - performer.mkfifo.perms=%s' % (cf["performer.mkfifo.perms"]), file=sys.stderr)
         return False
 
     # asynperformer
@@ -293,97 +293,97 @@ def parse_conf(cf):
                     cf["asynperformer.mkfifo.stop.code"]],
                    )
     if len(a_mkfifo) != 3:
-        print >>sys.stderr, 'Is not unique. - asynperformer.mkfifo.[start,ignore,stop]=%s,%s,%s' \
+        print('Is not unique. - asynperformer.mkfifo.[start,ignore,stop]=%s,%s,%s' \
               % (cf["asynperformer.mkfifo.start.code"],
                  cf["asynperformer.mkfifo.ignore.code"],
                  cf["asynperformer.mkfifo.stop.code"],
-                 )
+                 ), file=sys.stderr)
         return False
 
     try:
         pwd.getpwnam(cf["asynperformer.mkfifo.user.name"])
     except:
-        print >>sys.stderr, 'Can not get information of the user (nonexistent?). - asynperformer.mkfifo.user.name=%s' % (cf["asynperformer.mkfifo.user.name"])
+        print('Can not get information of the user (nonexistent?). - asynperformer.mkfifo.user.name=%s' % (cf["asynperformer.mkfifo.user.name"]), file=sys.stderr)
 
     try:
         grp.getgrnam(cf["asynperformer.mkfifo.group.name"])
     except:
-        print >>sys.stderr, 'Can not get information of the group (nonexistent?). - asynperformer.mkfifo.group.name=%s' % (cf["asynperformer.mkfifo.group.name"])
+        print('Can not get information of the group (nonexistent?). - asynperformer.mkfifo.group.name=%s' % (cf["asynperformer.mkfifo.group.name"]), file=sys.stderr)
 
     try:
         int(cf["asynperformer.mkfifo.perms"], 8)
     except:
-        print >>sys.stderr, 'Incorrect file permissions. - asynperformer.mkfifo.perms=%s' % (cf["asynperformer.mkfifo.perms"])
+        print('Incorrect file permissions. - asynperformer.mkfifo.perms=%s' % (cf["asynperformer.mkfifo.perms"]), file=sys.stderr)
         return False
 
-    if cf.has_key("job.whitelist.flag") is True \
+    if ("job.whitelist.flag" in cf) is True \
            and cf["job.whitelist.flag"] == "1" \
-           and cf.has_key("job.whitelist.path") is True \
+           and ("job.whitelist.path" in cf) is True \
            and 0 < len(cf["job.whitelist.path"]):
         if os.path.isfile(cf["job.whitelist.path"]) is False:
-            print >>sys.stderr, 'File not found. - job.whitelist.path=%s' % (cf["job.whitelist.path"])
+            print('File not found. - job.whitelist.path=%s' % (cf["job.whitelist.path"]), file=sys.stderr)
             return False
 
     # database.pool.status
     if (cf["database.pool.status"] in ("0","1")) is False:
-        print >>sys.stderr, 'The mistake is found in the set value. Please set 0 or 1. - database.pool.status'
+        print('The mistake is found in the set value. Please set 0 or 1. - database.pool.status', file=sys.stderr)
         return False
 
     if cf["database.pool.status"] == "1":
         # database.pool.max.overflow
-        if cf.has_key("database.pool.max.overflow") is False:
-            print >>sys.stderr, 'Configuration information is missing. - database.pool.max.overflow'
+        if ("database.pool.max.overflow" in cf) is False:
+            print('Configuration information is missing. - database.pool.max.overflow', file=sys.stderr)
             return False
 
         # database.pool.size
-        if cf.has_key("database.pool.size") is False:
-            print >>sys.stderr, 'Configuration information is missing. - database.pool.size'
+        if ("database.pool.size" in cf) is False:
+            print('Configuration information is missing. - database.pool.size', file=sys.stderr)
             return False
 
         # int
         if is_int(cf["database.pool.max.overflow"]) is False:
-            print >>sys.stderr, 'Please set it by the numerical value. - database.pool.max.overflow'
+            print('Please set it by the numerical value. - database.pool.max.overflow', file=sys.stderr)
             return False
         else:
             set_cf_int(cf, "database.pool.max.overflow")
 
         if is_int(cf["database.pool.size"]) is False:
-            print >>sys.stderr, 'Please set it by the numerical value. - database.pool.size'
+            print('Please set it by the numerical value. - database.pool.size', file=sys.stderr)
             return False
         else:
             set_cf_int(cf, "database.pool.size")
 
         if int(cf["database.pool.size"]) <= 0:
-            print >>sys.stderr, 'Please set values that are larger than 0. - database.pool.size'
+            print('Please set values that are larger than 0. - database.pool.size', file=sys.stderr)
             return False
         else:
             set_cf_int(cf, "database.pool.size")
 
         # Comparison
         if int(cf["database.pool.max.overflow"]) < int(cf["database.pool.size"]):
-            print >>sys.stderr, 'Please set "database.pool.max.overflow" to a value that is larger than "database.pool.size".'
+            print('Please set "database.pool.max.overflow" to a value that is larger than "database.pool.size".', file=sys.stderr)
             return False
 
     # asynperformer.thread.pool.size
-    if cf.has_key("asynperformer.thread.pool.size") is False:
-        print >>sys.stderr, 'Configuration information is missing. - asynperformer.thread.pool.size'
+    if ("asynperformer.thread.pool.size" in cf) is False:
+        print('Configuration information is missing. - asynperformer.thread.pool.size', file=sys.stderr)
         return False
 
     if is_int(cf["asynperformer.thread.pool.size"]) is False:
-        print >>sys.stderr, 'Please set it by the numerical value. - asynperformer.thread.pool.size'
+        print('Please set it by the numerical value. - asynperformer.thread.pool.size', file=sys.stderr)
         return False
     else:
         set_cf_int(cf, "asynperformer.thread.pool.size")
 
     if int(cf["asynperformer.thread.pool.size"]) <= 0:
-        print >>sys.stderr, 'Please set values that are larger than 0. - asynperformer.thread.pool.size'
+        print('Please set values that are larger than 0. - asynperformer.thread.pool.size', file=sys.stderr)
         return False
 
     return True
 
 def readconf(path):
     if not os.path.isfile(path):
-        print >>sys.stderr, 'file=%s - file specified in the option does not exist.' % path
+        print('file=%s - file specified in the option does not exist.' % path, file=sys.stderr)
         return None
 
     fp = open(path, 'r')
@@ -397,13 +397,13 @@ def readconf(path):
                 key, value = line.split('=', 1)
                 try:
                     value = value[:value.rindex('#')]
-                except ValueError,ve:
+                except ValueError as ve:
                     pass
                 _r[key] = value
             return _r
-        except Exception, e:
-            print >>sys.stderr, 'file=%s - Failed to load configuration files. : except=%s' \
-                  % (path, e.args)
+        except Exception as e:
+            print('file=%s - Failed to load configuration files. : except=%s' \
+                  % (path, e.args), file=sys.stderr)
             return None
     finally:
         fp.close()
@@ -413,7 +413,7 @@ def sysappend(pkg):
     if type(pkg) is list:
         lines = pkg
     else:
-        print >>sys.stderr, '%s should be list type.' % (pkg,)
+        print('%s should be list type.' % (pkg,), file=sys.stderr)
         return False
         
     for line in lines:

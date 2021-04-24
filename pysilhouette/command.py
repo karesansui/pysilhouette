@@ -61,7 +61,7 @@ def dict2command(cmd, options={}):
         raise CommandException("command not found. - cmd=%s" % cmd)
 
     ret = ""
-    for x in options.keys():
+    for x in list(options.keys()):
         if options[x] is None:
             ret += "--%s " % x 
         else:
@@ -87,8 +87,8 @@ class Command:
     logger = None
 
     def __init__(self):
-        if os.environ.has_key('PYSILHOUETTE_CONF') is False:
-            print >>sys.stderr, '[Error] "PYSILHOUETTE_CONF" did not exist in the environment.'
+        if ('PYSILHOUETTE_CONF' in os.environ) is False:
+            print('[Error] "PYSILHOUETTE_CONF" did not exist in the environment.', file=sys.stderr)
             sys.exit(1)
             
         self.cf = pysilhouette.prep.readconf(os.environ['PYSILHOUETTE_CONF'])
@@ -107,15 +107,15 @@ class Command:
 
             reload_mappers(self.db.get_metadata())
             self.session = self.db.get_session()
-        except Exception, e:
-            print >>sys.stderr, '[Error] Initializing a database error - %s' % str(e.args)
+        except Exception as e:
+            print('[Error] Initializing a database error - %s' % str(e.args), file=sys.stderr)
             self.logger.error('Initializing a database error - %s' % str(e.args))
             t_logger = logging.getLogger('pysilhouette_traceback')
             t_logger.error(traceback.format_exc())
             sys.exit(1)
 
     def _pre(self):
-        if os.environ.has_key('JOB_ID') is False:
+        if ('JOB_ID' in os.environ) is False:
             self.logger.debug('"JOB_ID" did not exist in the environment.')
             self.job_id = None
         else:
@@ -140,9 +140,9 @@ class Command:
                          
                     return 0
                 
-                except CommandException, e:
+                except CommandException as e:
                     self.logger.error("Command execution error - %s" % str(e.args))
-                    print >>sys.stderr, _("Command execution error - %s") % str(e.args)
+                    print(_("Command execution error - %s") % str(e.args), file=sys.stderr)
                     raise
             except:
                 self.session.rollback()

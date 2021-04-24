@@ -105,12 +105,12 @@ class SuiteSysappend(unittest.TestSuite):
     def __init__(self):
         tests = ['test_sysappend_0', 'test_sysappend_1',
                  'test_sysappend_2', 'test_sysappend_3']
-        unittest.TestSuite.__init__(self,map(TestPrep, tests))
+        unittest.TestSuite.__init__(self,list(map(TestPrep, tests)))
 
 class SuiteReadconf(unittest.TestSuite):
     def __init__(self):
         tests = ['test_readconf_0']
-        unittest.TestSuite.__init__(self,map(TestPrep, tests))
+        unittest.TestSuite.__init__(self,list(map(TestPrep, tests)))
 
 def all_suite_prep():
     return unittest.TestSuite([SuiteSysappend(), SuiteReadconf()])

@@ -115,7 +115,7 @@ def observer(opts, cf):
             else:
                 pass
             
-        except IOError, ioe:
+        except IOError as ioe:
             logger.error("Failed to write status. file=%s - %s" \
                         % (cf["observer.status.path"], str(ioe.args)))
 
@@ -281,8 +281,8 @@ def daemonize(stdin, stdout, stderr, pidfile):
     try:
         pid = os.fork()
         if pid > 0: sys.exit(0)
-    except OSError, e:
-        print >>sys.stderr, 'fork #1 failed: (%d) %s\n' % (e.errno, e.strerror)
+    except OSError as e:
+        print('fork #1 failed: (%d) %s\n' % (e.errno, e.strerror), file=sys.stderr)
         logger.error('fork #1 failed: (%d) %s\n' % (e.errno, e.strerror))
         sys.exit(1)
     os.chdir('/')
@@ -291,8 +291,8 @@ def daemonize(stdin, stdout, stderr, pidfile):
     try:
         pid = os.fork()
         if pid > 0: sys.exit(0)
-    except OSError, e:
-        print >>sys.stderr, 'fork #2 failed: (%d) %s\n' % (e.errno, e.strerror)
+    except OSError as e:
+        print('fork #2 failed: (%d) %s\n' % (e.errno, e.strerror), file=sys.stderr)
         logger.error('fork #2 failed: (%d) %s\n' % (e.errno, e.strerror))
         sys.exit(1)
     # Write pid.
@@ -303,7 +303,7 @@ def daemonize(stdin, stdout, stderr, pidfile):
         f.write('%d' % pid)
         f.close()
     except IOError:
-        print >>sys.stderr, 'file=%s - daemonize: failed to write pid to %s' % (pidfile , pid)
+        print('file=%s - daemonize: failed to write pid to %s' % (pidfile , pid), file=sys.stderr)
         logger.error('file=%s - daemonize: failed to write pid to %s' % (pidfile , pid))
         sys.exit(1)
 

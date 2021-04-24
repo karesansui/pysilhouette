@@ -71,7 +71,7 @@ def jobgroup_findbyid(session, jgid, uniq_key):
     try:
         return session.query(JobGroup).filter(
             JobGroup.id == jgid).filter(JobGroup.uniq_key == uniq_key).one()
-    except sqlalchemy.orm.exc.NoResultFound, nrf:
+    except sqlalchemy.orm.exc.NoResultFound as nrf:
         return None
 
 

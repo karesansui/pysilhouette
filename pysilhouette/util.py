@@ -195,7 +195,7 @@ def is_int(val):
         return False
 
 def is_key(cf, key):
-    if cf.has_key(key) is True and 0 < len(cf[key]):
+    if (key in cf) is True and 0 < len(cf[key]):
         return True
     else:
         return False
@@ -205,4 +205,4 @@ def set_cf_int(cf, key):
 
 if __name__ == '__main__':
     #print popen(cmd='efdsfdsafdsafdsafdsafdsa', timeout=3, waittime=1, lang='C')
-    print popen(cmd='date', timeout=3, waittime=1, lang='C')
+    print(popen(cmd='date', timeout=3, waittime=1, lang='C'))

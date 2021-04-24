@@ -36,8 +36,8 @@ import traceback
 
 try:
     import sqlalchemy
-except ImportError, e:
-    print >>sys.stderr, '[Error] There are not enough libraries. - %s' % str(e.args)
+except ImportError as e:
+    print('[Error] There are not enough libraries. - %s' % str(e.args), file=sys.stderr)
     #traceback.format_exc()
     sys.exit(1)
 
@@ -66,13 +66,13 @@ def main():
     ####
     try:
         opts.config = os.path.abspath(opts.config)
-    except AttributeError, e:
-        print >>sys.stderr, 'No configuration file path.'
+    except AttributeError as e:
+        print('No configuration file path.', file=sys.stderr)
         return PROCERROR
     
     cf = readconf(opts.config)
     if cf is None:
-        print >>sys.stderr, 'Failed to load the config file "%s". (%s)' % (opts.config, sys.argv[0])
+        print('Failed to load the config file "%s". (%s)' % (opts.config, sys.argv[0]), file=sys.stderr)
         return PROCERROR
 
     # conf parse
@@ -82,11 +82,11 @@ def main():
     if reload_conf(cf["env.sys.log.conf.path"]):
         logger = logging.getLogger('pysilhouette.silhouette')
     else:
-        print >>sys.stderr, 'Failed to load the log file. (%s)' % sys.argv[0]
+        print('Failed to load the log file. (%s)' % sys.argv[0], file=sys.stderr)
         return PROCERROR
 
     if opts.uniqkey:
-        print >>sys.stdout, cf["env.uniqkey"]
+        print(cf["env.uniqkey"], file=sys.stdout)
         return PROCSUCCESS
 
     if opts.daemon is True:
@@ -103,15 +103,15 @@ def main():
         signal.signal(signal.SIGTERM, sigterm_handler)
         ret = observer(opts=opts, cf=cf) # start!!
         return ret
-    except KeyboardInterrupt, k:
+    except KeyboardInterrupt as k:
         logger.critical('Keyboard interrupt occurred. - %s' % str(k.args))
-        print >>sys.stderr, 'Keyboard interrupt occurred. - %s' % str(k.args)
-    except Exception, e:
+        print('Keyboard interrupt occurred. - %s' % str(k.args), file=sys.stderr)
+    except Exception as e:
         logger.critical('System error has occurred. - %s' % str(e.args))
-        print >>sys.stderr, 'System error has occurred. - %s' % str(e.args)
+        print('System error has occurred. - %s' % str(e.args), file=sys.stderr)
         t_logger = logging.getLogger('pysilhouette_traceback')
         t_logger.critical(traceback.format_exc())
-        print >>sys.stderr, traceback.format_exc()
+        print(traceback.format_exc(), file=sys.stderr)
 
     return PROCERROR
 

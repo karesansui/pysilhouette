@@ -61,4 +61,4 @@ if __name__ == '__main__':
         _logger = logging.getLogger('pysilhouette.log')
         _logger.debug('test')
     else:
-        print >>sys.stderr('Loading configuration files still do not log.')
+        print(file=sys.stderr('Loading configuration files still do not log.'))

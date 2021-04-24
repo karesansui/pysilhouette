@@ -71,7 +71,7 @@ class AsynScheduler(ER):
                 self.logger.debug('interval start, interval=%s' % (self.cf['asynscheduler.interval']))
                 time.sleep(self.cf['asynscheduler.interval'])
 
-            except IOError, i:
+            except IOError as i:
                 if i.errno == 4:
                     return PROCSUCCESS # When ending with the signal
 
@@ -88,7 +88,7 @@ def main():
 
     cf = readconf(opts.config)
     if cf is None:
-        print >>sys.stderr, 'Failed to load the config file "%s". (%s)' % (opts.config, sys.argv[0])
+        print('Failed to load the config file "%s". (%s)' % (opts.config, sys.argv[0]), file=sys.stderr)
         return PROCERROR
     
     # conf parse
@@ -98,7 +98,7 @@ def main():
     if reload_conf(cf["env.sys.log.conf.path"]):
         logger = logging.getLogger('pysilhouette.asynscheduler')
     else:
-        print >>sys.stderr, 'Failed to load the log file. (%s)' % sys.argv[0]
+        print('Failed to load the log file. (%s)' % sys.argv[0], file=sys.stderr)
         return PROCERROR
     
     try:
@@ -107,13 +107,13 @@ def main():
             asynscheduler = AsynScheduler(opts, cf)
             ret = asynscheduler.process() # start!!
             return ret
-        except KeyboardInterrupt, k:
+        except KeyboardInterrupt as k:
             logger.critical('Keyboard interrupt occurred. - %s' % str(k.args))
-            print >>sys.stderr, 'Keyboard interrupt occurred. - %s' % str(k.args)
-        except Exception, e:
+            print('Keyboard interrupt occurred. - %s' % str(k.args), file=sys.stderr)
+        except Exception as e:
             logger.critical('A system error has occurred. - %s' % str(e.args))
-            print >>sys.stderr, 'A system error has occurred. - %s' % str(e.args)
-            print >>sys.stderr, traceback.format_exc()
+            print('A system error has occurred. - %s' % str(e.args), file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
             t_logger = logging.getLogger('pysilhouette_traceback')
             t_logger.critical(traceback.format_exc())
             

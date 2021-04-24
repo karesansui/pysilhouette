@@ -36,5 +36,5 @@ __app__ = 'pysilhouette'
 PROCERROR = 1
 PROCSUCCESS = 0
 
-class SilhouetteException(StandardError):
+class SilhouetteException(Exception):
     pass
