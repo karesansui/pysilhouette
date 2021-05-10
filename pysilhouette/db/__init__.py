@@ -81,9 +81,6 @@ class Database:
     __Session = None
 
     def __init__(self, *args, **kwargs):
-        self.logger = logging.getLogger('pysilhouette.db')
-        self.logger.info(args)
-        self.logger.info(kwargs)
         self.get_engine(*args, **kwargs)
         self.create_metadata(self.__engine)
 
