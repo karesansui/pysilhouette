@@ -28,8 +28,8 @@
 @author: Kei Funagayama <kei@karesansui-project.info>
 """
 
-__version__ = '0.8'
-__release__ = '2'
+__version__ = '0.9'
+__release__ = '0'
 __app__ = 'pysilhouette'
 
 # DEFINE
