@@ -27,6 +27,7 @@
 """
 @author: Kei Funagayama <kei@karesansui-project.info>
 """
+from __future__ import print_function
 
 import time
 import os

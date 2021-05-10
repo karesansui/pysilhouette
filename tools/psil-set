@@ -27,6 +27,7 @@
 """
 @author: Kei Funagayama <kei.funagayama@hde.co.jp>
 """
+from __future__ import print_function
 
 import sys
 import os
