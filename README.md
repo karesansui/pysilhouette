@@ -1,10 +1,17 @@
+Notes for this fork
+===================
+
+This fork is being updated ot support python3.6+. Currently it is possible for the daemon to start and jobs can be entered into the database. Actual execution of the jobs has not been tested yet. 
+
 Abstract/Features
 ================================================================================
+
 Pysilhouette is a 100% pure Python daemon which executes background job commands
 queued in database. It is mainly used for web application to execute background tasks.
 
 Install
 ================================================================================
+
 See 'INSTALL'.
 
 
@@ -41,7 +48,8 @@ SQLAlchemy
 
 Directory Structure
 ================================================================================
-.
+
+```
 |-- AUTHORS
 |-- ChangeLog
 |-- INSTALL
@@ -122,6 +130,7 @@ Directory Structure
     |-- psil-cleandb
     |-- psil-set
     `-- sqlite2other.py
+```
 
 Acknowledgment
 ================================================================================
