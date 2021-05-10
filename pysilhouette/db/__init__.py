@@ -40,7 +40,7 @@ from pysilhouette.db.model import reload_mappers
 from pysilhouette import SilhouetteException
 
 
-from sqlalchemy.orm import sessionmaker, mapper, SessionExtension, scoped_session
+from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 
 class SilhouetteDBException(SilhouetteException):
     """Database running error.
@@ -50,13 +50,10 @@ class SilhouetteDBException(SilhouetteException):
 def create_database(cf):
     db = None
     if cf['database.url'][:6].strip() == 'sqlite':
-        db = Database(cf['database.url'],
-                      encoding="utf-8",
-                      convert_unicode=True,
-                      )
+        db = Database(url=cf['database.url'])
     else:
         if cf['database.pool.status'] == 1:
-            db = Database(cf['database.url'],
+            db = Database(url=cf['database.url'],
                           encoding="utf-8",
                           convert_unicode=True,
                           poolclass=QueuePool,
@@ -64,7 +61,7 @@ def create_database(cf):
                           max_overflow=cf['database.pool.max.overflow'],
                           )
         else:
-            db = Database(cf['database.url'],
+            db = Database(url=cf['database.url'],
                           encoding="utf-8",
                           convert_unicode=True,
                           poolclass=SingletonThreadPool,
@@ -84,6 +81,9 @@ class Database:
     __Session = None
 
     def __init__(self, *args, **kwargs):
+        self.logger = logging.getLogger('pysilhouette.db')
+        self.logger.info(args)
+        self.logger.info(kwargs)
         self.get_engine(*args, **kwargs)
         self.create_metadata(self.__engine)
 
@@ -92,8 +92,8 @@ class Database:
             self.__engine = create_engine(*args, **kwargs)
         return self.__engine
 
-    def create_metadata(self, bind=None, reflect=False):
-        return MetaData(bind,reflect)
+    def create_metadata(self, bind):
+        return MetaData(bind)
 
     def get_metadata(self):
         if not self.__metadata:

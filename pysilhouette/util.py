@@ -146,9 +146,9 @@ def popen(cmd, timeout, waittime, lang, limit=1048576, job_id=None):
 
     stdout = stderr = ''
     for x in proc.stdout:
-        stdout += x
+        stdout += str(x)
     for x in proc.stderr:
-        stderr += x
+        stderr += str(x)
 
     if stdout and limit < len(stdout):
         proc_info['stdout'] = stdout[:limit]

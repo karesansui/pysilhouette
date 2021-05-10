@@ -88,7 +88,7 @@ def main():
 
     cf = readconf(opts.config)
     if cf is None:
-        print('Failed to load the config file "%s". (%s)' % (opts.config, sys.argv[0]), file=sys.stderr)
+        print('Failed to load the config file {}. {}'.format(opts.config, sys.argv[0]), file=sys.stderr)
         return PROCERROR
     
     # conf parse

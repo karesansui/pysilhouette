@@ -85,7 +85,7 @@ def get_jobgroup_table(metadata, now):
                             sqlalchemy.Column('name', sqlalchemy.String(512), nullable=False),
                             sqlalchemy.Column('uniq_key', sqlalchemy.Unicode(36), nullable=False),
                             sqlalchemy.Column('finish_command', sqlalchemy.String(1024)), 
-                            sqlalchemy.Column('type', sqlalchemy.Integer(1), nullable=False,
+                            sqlalchemy.Column('type', sqlalchemy.Integer(), nullable=False,
                                               default=JOBGROUP_TYPE['SERIAL']),
                             sqlalchemy.Column('status', sqlalchemy.Unicode(3), nullable=False,
                                               default=JOBGROUP_STATUS['PEND']),
