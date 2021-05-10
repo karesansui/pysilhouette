@@ -71,7 +71,7 @@ class ER:
             pid = os.getpid()
             try:
                 write_pidfile(self.opts.pidfile, pid)
-            except Exception:
+            except Exception as e:
                 self.logger.error('Could not create process file. - file=%s' % self.opts.pidfile)
                 raise e
 
