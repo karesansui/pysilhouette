@@ -1,8 +1,3 @@
-Notes for this fork
-===================
-
-This fork is being updated ot support python3.6+. Currently it is possible for the daemon to start and jobs can be entered into the database. Actual execution of the jobs has not been tested yet. 
-
 Abstract/Features
 ================================================================================
 
@@ -42,8 +37,8 @@ THE SOFTWARE.
 Packages Pysilhouette depends on
 ================================================================================
 
-Python
-SQLAlchemy
+* python >= 2.7
+* SQLAlchemy = 1.4
 
 
 Directory Structure
