@@ -11,15 +11,10 @@ Copyright (C) 2009-2010 HDE, Inc.
 
 100% Pure Pythonで構成されたソフトウェアであるためコンパイルは必要ありません。
 
-RPMからのインストール
-    # rpm -ivh pysilhouette-xxxx.rpm
-
-easy_installからのインストール
-    # easy_install pysilhouette
-
 setup.pyを使用したインストール
-    # python setup.py build
-    # python setup.py install
+    # python3 setup.py build
+    # python3 setup.py install
+    # python3 setup.py install_lib
 
 
 データベースの作成

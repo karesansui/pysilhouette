@@ -9,15 +9,10 @@ Basic Installation
 ================================================================================
 Pysilhouette is 100% pure Python so it does not require compling.
 
-using RPM:
-    # rpm -ivh pysilhouette-xxxx.rpm
-
-using easy_install:
-    # easy_install pysilhouette
-
 using setup.py:
-    # python setup.py build
-    # python setup.py install
+    # python3 setup.py build
+    # python3 setup.py install
+    # python3 setup.py install_lib
 
 Creating Database
 ================================================================================
