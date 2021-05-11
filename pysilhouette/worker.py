@@ -227,9 +227,8 @@ class SimpleWorker(Worker):
                             
 
                     except OSError as oe:
-                        self.logger.info('action command system failed!! job_id=%d : cmd=%s'
-                                          % (m_job.id, cmd))
-                        raise oe
+                        self.logger.info('action command system failed!! job_id=%d : cmd=%s'% (m_job.id, cmd))
+                        self.logger.error(str(ae))
 
                     job_result_action(session, m_job, proc_info) # Job result UPDATE
 
@@ -328,7 +327,7 @@ class ThreadQueue(threading.Thread):
     def now_alive(self):
         ret = 0
         for th in self.response_list:
-            if th[0].isAlive() is True:
+            if th[0].is_alive() is True:
                 ret =+ 1
         return ret
 
@@ -336,7 +335,7 @@ class ThreadQueue(threading.Thread):
         _size = 0
         _len = len(self.response_list)
         while _size < _len:
-            if self.response_list[_size][0].isAlive() is False:
+            if self.response_list[_size][0].is_alive() is False:
                 self.response_list.pop(_size) # remove
                 _len =- 1
             else:
