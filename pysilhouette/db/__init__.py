@@ -40,7 +40,7 @@ from pysilhouette.db.model import reload_mappers
 from pysilhouette import SilhouetteException
 
 
-from sqlalchemy.orm import sessionmaker, mapper, SessionExtension, scoped_session
+from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 
 class SilhouetteDBException(SilhouetteException):
     """Database running error.
@@ -50,13 +50,10 @@ class SilhouetteDBException(SilhouetteException):
 def create_database(cf):
     db = None
     if cf['database.url'][:6].strip() == 'sqlite':
-        db = Database(cf['database.url'],
-                      encoding="utf-8",
-                      convert_unicode=True,
-                      )
+        db = Database(url=cf['database.url'])
     else:
         if cf['database.pool.status'] == 1:
-            db = Database(cf['database.url'],
+            db = Database(url=cf['database.url'],
                           encoding="utf-8",
                           convert_unicode=True,
                           poolclass=QueuePool,
@@ -64,7 +61,7 @@ def create_database(cf):
                           max_overflow=cf['database.pool.max.overflow'],
                           )
         else:
-            db = Database(cf['database.url'],
+            db = Database(url=cf['database.url'],
                           encoding="utf-8",
                           convert_unicode=True,
                           poolclass=SingletonThreadPool,
@@ -92,8 +89,8 @@ class Database:
             self.__engine = create_engine(*args, **kwargs)
         return self.__engine
 
-    def create_metadata(self, bind=None, reflect=False):
-        return MetaData(bind,reflect)
+    def create_metadata(self, bind):
+        return MetaData(bind)
 
     def get_metadata(self):
         if not self.__metadata:
@@ -121,7 +118,7 @@ def dbsave(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to insert is failed, '
                           'Invalid value was inputed. '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))
@@ -154,7 +151,7 @@ def dbupdate(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to update is failed, '
                           'Invalid value was inputed '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))
@@ -187,7 +184,7 @@ def dbdelete(func):
         model_id = model.id
         try:
             func(*args, **kwargs)
-        except UnmappedInstanceError, ui:
+        except UnmappedInstanceError as ui:
             logger.error(('Data to delete is failed, '
                           'Invalid value was inputed '
                           '- %s=%s, error=%s') % (model_name, model_id, str(ui.args)))

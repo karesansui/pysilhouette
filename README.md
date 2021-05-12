@@ -1,10 +1,12 @@
 Abstract/Features
 ================================================================================
+
 Pysilhouette is a 100% pure Python daemon which executes background job commands
 queued in database. It is mainly used for web application to execute background tasks.
 
 Install
 ================================================================================
+
 See 'INSTALL'.
 
 
@@ -35,13 +37,14 @@ THE SOFTWARE.
 Packages Pysilhouette depends on
 ================================================================================
 
-Python
-SQLAlchemy
+* python >= 2.7
+* SQLAlchemy = 1.4
 
 
 Directory Structure
 ================================================================================
-.
+
+```
 |-- AUTHORS
 |-- ChangeLog
 |-- INSTALL
@@ -122,6 +125,7 @@ Directory Structure
     |-- psil-cleandb
     |-- psil-set
     `-- sqlite2other.py
+```
 
 Acknowledgment
 ================================================================================

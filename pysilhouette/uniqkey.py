@@ -27,6 +27,7 @@
 """
 @author: Kei Funagayama <kei@karesansui-project.info>
 """
+from __future__ import print_function
 
 import sys
 import random
@@ -36,7 +37,7 @@ UNIQ_TPL = '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x
 
 def getuniqkey():
     _r = []
-    for _i in xrange(0,16):
+    for _i in range(0,16):
         _r.append(random.randint(0, 255))
     return UNIQ_TPL % tuple(_r)
 
@@ -47,4 +48,4 @@ def is_uuid(uuid=None):
     return False
 
 if __name__ == '__main__':
-    print >>sys.stdout, getuniqkey()
+    print(getuniqkey(), file=sys.stdout)

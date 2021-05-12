@@ -67,32 +67,32 @@ class TestWorker(unittest.TestCase):
         jg1 = JobGroup(jg_name.decode('utf-8'), uniqkey)
 
         if job[0] is True:
-            j1 = Job(u'file create','0','/bin/touch /tmp/test_case1.txt')
+            j1 = Job('file create','0','/bin/touch /tmp/test_case1.txt')
         else:
-            j1 = Job(u'file create','0','/bin/touch_dummy /tmp/test_case1.txt')
+            j1 = Job('file create','0','/bin/touch_dummy /tmp/test_case1.txt')
 
         if job[1] is True:
-            j2 = Job(u'file copy', '1', '/bin/cp /tmp/test_case1.txt /tmp/test_case1_rename.txt')
+            j2 = Job('file copy', '1', '/bin/cp /tmp/test_case1.txt /tmp/test_case1_rename.txt')
         else:
-            j2 = Job(u'file copy', '1', '/bin/cp_dummy /tmp/test_case1.txt /tmp/test_case1_rename.txt')
+            j2 = Job('file copy', '1', '/bin/cp_dummy /tmp/test_case1.txt /tmp/test_case1_rename.txt')
 
         if job[2] is True:
-            j3 = Job(u'file delete','2','/bin/rm /tmp/test_case1.txt')
+            j3 = Job('file delete','2','/bin/rm /tmp/test_case1.txt')
         else:
-            j3 = Job(u'file delete','2','/bin/rm_dummy /tmp/test_case1.txt')
+            j3 = Job('file delete','2','/bin/rm_dummy /tmp/test_case1.txt')
 
         jg1.jobs.append(j1)
         jg1.jobs.append(j2)
         jg1.jobs.append(j3)
 
         if rollback is True:
-            j1.rollback_command = u'/bin/echo JOB1 rollback'
-            j2.rollback_command = u'/bin/echo JOB2 rollback'
-            j3.rollback_command = u'/bin/echo JOB3 rollback'
+            j1.rollback_command = '/bin/echo JOB1 rollback'
+            j2.rollback_command = '/bin/echo JOB2 rollback'
+            j3.rollback_command = '/bin/echo JOB3 rollback'
         elif rollback is False:
-            j1.rollback_command = u'/bin/echo_dummy JOB1 rollback'
-            j2.rollback_command = u'/bin/echo_dummy JOB2 rollback'
-            j3.rollback_command = u'/bin/echo_dummy JOB3 rollback'
+            j1.rollback_command = '/bin/echo_dummy JOB1 rollback'
+            j2.rollback_command = '/bin/echo_dummy JOB2 rollback'
+            j3.rollback_command = '/bin/echo_dummy JOB3 rollback'
         elif rollback is None:
             pass
 
@@ -807,27 +807,27 @@ def test_setup(cf):
     db.get_metadata().drop_all()
     db.get_metadata().create_all()
 
-    f_cmd = (u'python /root/repository/pysilhouette_svn/pysilhouette/job/sendmail.py'
-             u' --from="root@localhost"'
-             u' --to="root@localhost"'
-             u' --subject="test"'
-             u' --hostname="localhost"'
-             u' --port="25"'
-             u' --msg="%s"'
-             u' --charset="utf-8"')
+    f_cmd = ('python /root/repository/pysilhouette_svn/pysilhouette/job/sendmail.py'
+             ' --from="root@localhost"'
+             ' --to="root@localhost"'
+             ' --subject="test"'
+             ' --hostname="localhost"'
+             ' --port="25"'
+             ' --msg="%s"'
+             ' --charset="utf-8"')
 
     session = db.get_session()
-    jg1 = JobGroup(u'get date', '172.16.0.123')
+    jg1 = JobGroup('get date', '172.16.0.123')
     jg1.finish_command = f_cmd % jg1.name
-    jb1 = Job(u'get date','0',u'/bin/date error')
-    jb1.rollback_command = u'/bin/date'
+    jb1 = Job('get date','0','/bin/date error')
+    jb1.rollback_command = '/bin/date'
     jg1.jobs.append(jb1)
-    jg2 = JobGroup(u'get route', '172.16.0.123')
+    jg2 = JobGroup('get route', '172.16.0.123')
     jg2.finish_command = f_cmd % jg2.name
-    jg2.jobs.append(Job(u'get route','1', u'/sbin/route'))
-    jg3 = JobGroup(u'print string', '172.16.0.123')
+    jg2.jobs.append(Job('get route','1', '/sbin/route'))
+    jg3 = JobGroup('print string', '172.16.0.123')
     jg3.finish_command = f_cmd % jg3.name
-    jg3.jobs.append(Job(u'print string','2', u'/bin/echo test'))
+    jg3.jobs.append(Job('print string','2', '/bin/echo test'))
     session.add_all([jg1,jg2,jg3])
     #session.add(jg1)
     session.commit()
@@ -852,7 +852,7 @@ class SuiteWorker(unittest.TestSuite):
                  'test_case28', 'test_case29', 'test_case30', 
                  'test_case31', 'test_case32']
 
-        unittest.TestSuite.__init__(self,map(TestWorker, tests))
+        unittest.TestSuite.__init__(self,list(map(TestWorker, tests)))
 
 def all_suite_worker():
     return unittest.TestSuite([SuiteWorker()])
@@ -864,22 +864,22 @@ if __name__ == '__main__':
     cf = readconf(os.environ['PYSILHOUETTE_CONF'])
     pysilhouette.log.reload_conf(cf["env.sys.log.conf.path"])
 
-    ok_f_cmd = (u'python /root/pysilhouette/pysilhouette/job/sendmail.py' 
-                u' --from="root@localhost"' 
-                u' --to="root@localhost"'
-                u' --subject="Results of Worker(%s)"' 
-                u' --hostname="localhost"' 
-                u' --port="25"'
-                u' --msg="%s"' 
-                u' --charset="utf-8"') 
+    ok_f_cmd = ('python /root/pysilhouette/pysilhouette/job/sendmail.py' 
+                ' --from="root@localhost"' 
+                ' --to="root@localhost"'
+                ' --subject="Results of Worker(%s)"' 
+                ' --hostname="localhost"' 
+                ' --port="25"'
+                ' --msg="%s"' 
+                ' --charset="utf-8"') 
 
-    ng_f_cmd = (u'python /root/pysilhouette/pysilhouette/job/sendmail_dummy.py' 
-                u' --from="root@localhost"' 
-                u' --to="root@localhost"' 
-                u' --subject="Results of Worker(%s)"' 
-                u' --hostname="localhost"' 
-                u' --port="25"'
-                u' --msg="%s"' 
-                u' --charset="utf-8"') 
+    ng_f_cmd = ('python /root/pysilhouette/pysilhouette/job/sendmail_dummy.py' 
+                ' --from="root@localhost"' 
+                ' --to="root@localhost"' 
+                ' --subject="Results of Worker(%s)"' 
+                ' --hostname="localhost"' 
+                ' --port="25"'
+                ' --msg="%s"' 
+                ' --charset="utf-8"') 
 
     unittest.TextTestRunner(verbosity=2).run(all_suite_worker())

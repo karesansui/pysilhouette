@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # This file is part of Pysilhouette.
@@ -27,7 +27,7 @@
 """
 @author: Kei Funagayama <kei@karesansui-project.info>
 """
-
+from __future__ import print_function
 import sys
 import os
 import logging
@@ -36,44 +36,35 @@ from pysilhouette.prep import getopts, readconf, chkopts
 from pysilhouette.db import Database, reload_mappers
 
 def main():
+
     (opts, args) = getopts()
     if chkopts(opts) is True:
         return 1
     
     try:
         opts.config = os.path.abspath(opts.config)
-    except AttributeError, e:
-        print >>sys.stderr, 'No configuration file path.'
+    except AttributeError as e:
+        print('No configuration file path.', file=sys.stderr)
         return 1
     
     cf = readconf(opts.config)
     if cf is None:
-        print >>sys.stderr, 'Failed to load the config file.'
+        print('Failed to load the config file.', file=sys.stderr)
         return 1
     
     try:
-        db = Database(cf['database.url'],
-                      encoding="utf-8",
-                      convert_unicode=True,
-                      assert_unicode='warn', # TODO
-                      #echo = opts.verbose,
-                      #echo_pool = opts.verbose,
-                      echo=True, # TODO
-                      echo_pool=True # TODO
-                      )
-
-        reload_mappers(db.get_metadata())
-
-    except Exception, e:
-        print >>sys.stderr, 'Initializing a database error'
+        db = Database(url=cf['database.url'], encoding="utf-8", convert_unicode=True, echo=True, echo_pool=True)
+    except Exception as e:
+        print('Initializing a database error', file=sys.stderr)
         raise
-    
+
+    reload_mappers(db.get_metadata())
     try:
         db.get_metadata().drop_all()
         db.get_metadata().create_all()
-        print >>sys.stdout, 'Cleanup Database [OK]'
-    except Exception,e:
-        print >>sys.stderr, 'database drop and create error.'
+        print('Cleanup Database [OK]', file=sys.stdout)
+    except Exception as e:
+        print('database drop and create error.', file=sys.stderr)
         raise
 
 

@@ -35,16 +35,16 @@ from sqlalchemy.orm import mapper, relation, clear_mappers
 from pysilhouette.util import is_empty
 
 # Job Constant
-_RES_CREATING = u'100' #: Creating
-_RES_PENDING = u'101' #: Pending
-_RES_RUNNING = u'102' #: Running
-_RES_ROLLBACK = u'103' #: Rollback running
-_RES_NORMAL_END = u'200' #: Normal end
-_RES_ROLLBACK_SUCCESSFUL_COMPLETION = u'201' #: Rollback successful completion
-_RES_ABNORMAL_TERMINATION = u'500' #: Abnormal termination
-_RES_ROLLBACK_ABEND = u'501' #: Rollback abend
-_RES_APP_ERROR = u'502' #: Application error
-_RES_WHITELIST_ERROR = u'503' #: Whitelist error
+_RES_CREATING = '100' #: Creating
+_RES_PENDING = '101' #: Pending
+_RES_RUNNING = '102' #: Running
+_RES_ROLLBACK = '103' #: Rollback running
+_RES_NORMAL_END = '200' #: Normal end
+_RES_ROLLBACK_SUCCESSFUL_COMPLETION = '201' #: Rollback successful completion
+_RES_ABNORMAL_TERMINATION = '500' #: Abnormal termination
+_RES_ROLLBACK_ABEND = '501' #: Rollback abend
+_RES_APP_ERROR = '502' #: Application error
+_RES_WHITELIST_ERROR = '503' #: Whitelist error
 
 #: Action command status.
 ACTION_STATUS = {
@@ -85,7 +85,7 @@ def get_jobgroup_table(metadata, now):
                             sqlalchemy.Column('name', sqlalchemy.String(512), nullable=False),
                             sqlalchemy.Column('uniq_key', sqlalchemy.Unicode(36), nullable=False),
                             sqlalchemy.Column('finish_command', sqlalchemy.String(1024)), 
-                            sqlalchemy.Column('type', sqlalchemy.Integer(1), nullable=False,
+                            sqlalchemy.Column('type', sqlalchemy.Integer(), nullable=False,
                                               default=JOBGROUP_TYPE['SERIAL']),
                             sqlalchemy.Column('status', sqlalchemy.Unicode(3), nullable=False,
                                               default=JOBGROUP_STATUS['PEND']),
@@ -142,11 +142,10 @@ def reload_mappers(metadata):
         mapper(JobGroup, t_jobgroup, properties={'jobs': relation(Job)})
         #mapper(JobGroup, t_jobgroup, properties={'jobs': relation(Job, backref='job_group')})
         mapper(Job, t_job)
-    except sqlalchemy.exc.ArgumentError, ae:
+    except sqlalchemy.exc.ArgumentError as ae:
         clear_mappers()
         mapper(JobGroup, t_jobgroup, properties={'jobs': relation(Job)})
-        #mapper(JobGroup, t_jobgroup, properties={'jobs': relation(Job, backref='job_group')})
-        mapper(Job, t_job)        
+        mapper(Job, t_job)
     
 class Model(object):
     """Model base class of all.
@@ -154,7 +153,7 @@ class Model(object):
     def utf8(self, column):
         if hasattr(self, column):
             ret = getattr(self, column)
-            if isinstance(ret, unicode):
+            if isinstance(ret, str):
                 return ret.encode('utf-8')
             elif isinstance(ret, str):
                 return ret
@@ -214,37 +213,37 @@ if __name__ == '__main__':
     session = Session()
 
     # INSERT
-    jg = JobGroup(u'All Update', '192.168.0.100')
+    jg = JobGroup('All Update', '192.168.0.100')
     jg.jobs.append(Job(
-        u'Yum Update MySQL',
+        'Yum Update MySQL',
         '0',
         '/usr/bin/yum update mysql'))
     jg.jobs.append(Job(
-        u'Yum Update PostgreSQL',
+        'Yum Update PostgreSQL',
         '1',
         '/usr/bin/yum update postgresql'))
     jg.jobs.append(Job(
-        u'Yum Update httpd',
+        'Yum Update httpd',
         '2',
         '/usr/bin/yum update httpd'))
     session.add(jg)
-    jg1 = JobGroup(u'get date', '172.16.0.123')
-    jg1.jobs.append(Job(u'get date','0', '/bin/date'))
-    jg2 = JobGroup(u'get route', '172.16.0.123')
-    jg2.jobs.append(Job(u'get route','0', '/sbin/route'))
-    jg3 = JobGroup(u'get ping', '172.16.0.123')
-    jg3.jobs.append(Job(u'get ping','0', '/bin/ping 172.16.0.1'))
+    jg1 = JobGroup('get date', '172.16.0.123')
+    jg1.jobs.append(Job('get date','0', '/bin/date'))
+    jg2 = JobGroup('get route', '172.16.0.123')
+    jg2.jobs.append(Job('get route','0', '/sbin/route'))
+    jg3 = JobGroup('get ping', '172.16.0.123')
+    jg3.jobs.append(Job('get ping','0', '/bin/ping 172.16.0.1'))
     session.add_all([jg1,jg2,jg3])
     session.commit()
 
     # SELECT One
-    jg = session.query(JobGroup).filter(JobGroup.name == u'All Update').one()
-    print jg.__repr__()
+    jg = session.query(JobGroup).filter(JobGroup.name == 'All Update').one()
+    print(jg.__repr__())
     for jg in session.query(JobGroup).all():
-        print jg.__repr__()
+        print(jg.__repr__())
 
     # UPDATE
-    jg = session.query(JobGroup).filter(JobGroup.name == u'All Update').one()
+    jg = session.query(JobGroup).filter(JobGroup.name == 'All Update').one()
     jg.name = 'All Update - edit'
     for j in jg.jobs:
         j.name = 'All Update - edit'
@@ -253,9 +252,9 @@ if __name__ == '__main__':
 
     # DELETE + Manual CASCADE
     jgs = session.query(JobGroup).\
-                  filter(JobGroup.name.in_([u'get date', \
-                                           u'get route', \
-                                           u'get ping'])).all()
+                  filter(JobGroup.name.in_(['get date', \
+                                           'get route', \
+                                           'get ping'])).all()
     for jg in jgs:
         for j in jg.jobs:
             session.delete(j)

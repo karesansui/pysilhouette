@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # This file is part of Pysilhouette.
@@ -27,6 +27,7 @@
 """
 @author: Kei Funagayama <kei.funagayama@hde.co.jp>
 """
+from __future__ import print_function
 
 import sys
 import os
@@ -61,23 +62,23 @@ def getopts():
 
 def chkopts(opts):
     if opts.config is None:
-        print >>sys.stderr, '-c or --config option is required.'
+        print('-c or --config option is required.', file=sys.stderr)
         return True
 
     if os.path.isfile(opts.config) is False:
-        print >>sys.stderr, '-c or --config file is specified in the option does not exist.'
+        print('-c or --config file is specified in the option does not exist.', file=sys.stderr)
         return True
 
     if opts.name is None:
-        print >>sys.stderr, '-m or --name option is required.'
+        print('-m or --name option is required.', file=sys.stderr)
         return True
 
     if opts.action is None:
-        print >>sys.stderr, '-a or --action option is required.'
+        print('-a or --action option is required.', file=sys.stderr)
         return True
 
     if opts.type is None:
-        print >>sys.stderr, '-t or --type option is required.'
+        print('-t or --type option is required.', file=sys.stderr)
         return True
 
     return False
@@ -89,13 +90,13 @@ def main():
     
     try:
         opts.config = os.path.abspath(opts.config)
-    except AttributeError, e:
-        print >>sys.stderr, 'No configuration file path.'
+    except AttributeError as e:
+        print('No configuration file path.', file=sys.stderr)
         return 1
     
     cf = readconf(opts.config)
     if cf is None:
-        print >>sys.stderr, 'Failed to load the config file.'
+        print('Failed to load the config file.', file=sys.stderr)
         return 1
     
     try:
@@ -112,18 +113,18 @@ def main():
         reload_mappers(db.get_metadata())
         session = db.get_session()
         
-    except Exception, e:
-        print >>sys.stderr, 'Initializing a database error'
+    except Exception as e:
+        print('Initializing a database error', file=sys.stderr)
         raise
     
     try:
         jgs = []
         for i in range(opts.number):
-            jg_name = u'%s-%d' % (opts.name, i)
-            jg_ukey = unicode(cf['env.uniqkey'], "utf-8") 
+            jg_name = '%s-%d' % (opts.name, i)
+            jg_ukey = str(cf['env.uniqkey']) 
             jg = JobGroup(jg_name, jg_ukey)
             if not opts.finish is None:
-                jg.finish_command = unicode(opts.finish, "utf-8")
+                jg.finish_command = str(opts.finish)
             if opts.type == 'serial':
                 jg.type = JOBGROUP_TYPE['SERIAL']
             elif opts.type == 'parallel':
@@ -131,11 +132,11 @@ def main():
             else:
                 jg.type = JOBGROUP_TYPE['SERIAL']
 
-            j_name = u'%s-%d' % (opts.name, i)
+            j_name = '%s-%d' % (opts.name, i)
             j_order = i
-            j = Job(j_name, j_order, unicode(opts.action, "utf-8"))
+            j = Job(j_name, j_order, str(opts.action))
             if not opts.rollback is None:
-                j.rollback_command = unicode(opts.rollback, "utf-8")
+                j.rollback_command = str(opts.rollback)
 
             jg.jobs.append(j)
             jgs.append(jg)
@@ -143,9 +144,9 @@ def main():
         session.add_all(jgs)
         session.commit()
         session.close()
-        print >>sys.stdout, 'Insert JobGroup and Job. num=%d [OK]' % opts.number
-    except Exception, e:
-        print >>sys.stderr, 'Failed to add JobGroup and Job.'
+        print('Insert JobGroup and Job. num=%d [OK]' % opts.number, file=sys.stdout)
+    except Exception as e:
+        print('Failed to add JobGroup and Job.', file=sys.stderr)
         raise
             
 if __name__ == '__main__':
